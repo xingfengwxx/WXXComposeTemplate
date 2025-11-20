@@ -13,6 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 
+/**
+ * author : 王星星
+ * date : 2025/11/20 19:26
+ * email : 1099420259@qq.com
+ * description : 
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

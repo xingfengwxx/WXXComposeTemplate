@@ -22,12 +22,12 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
-        // Room schema export
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-            }
-        }
+        // Room schema export (可选，用于导出数据库 schema)
+        // kapt {
+        //     arguments {
+        //         arg("room.schemaLocation", "$projectDir/schemas")
+        //     }
+        // }
     }
 
     buildTypes {
@@ -47,6 +47,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
         viewBinding = true
     }
@@ -54,6 +55,17 @@ android {
 
 kapt {
     correctErrorTypes = true
+    useBuildCache = true
+    includeCompileClasspath = false
+    javacOptions {
+        option("-Xmaxerrs", 500)
+        option("-Xmaxwarns", 500)
+    }
+    // 如果遇到内存问题，可以启用以下配置
+    // arguments {
+    //     arg("room.incremental", "true")
+    //     arg("room.schemaLocation", "$projectDir/schemas")
+    // }
 }
 
 dependencies {
@@ -104,7 +116,14 @@ dependencies {
     
     // Image
     implementation(libs.coil.compose)
+    // PictureSelector 基础 (必须)
     implementation(libs.picture.selector)
+    // PictureSelector 图片压缩 (按需引入)
+    implementation(libs.picture.selector.compress)
+    // PictureSelector 图片裁剪 (按需引入)
+    implementation(libs.picture.selector.ucrop)
+    // PictureSelector 自定义相机 (按需引入)
+    implementation(libs.picture.selector.camerax)
     
     // Media
     implementation(libs.exoplayer.core)
@@ -115,7 +134,6 @@ dependencies {
     
     // UI
     implementation(libs.dsltablayout.core)
-    implementation(libs.background.library)
     implementation(libs.base.recyclerview.adapter.helper)
     implementation(libs.autosize.core)
     
@@ -123,7 +141,7 @@ dependencies {
     implementation(libs.xxpermissions.core)
     
     // Utils
-    implementation(libs.android.util.code)
+    implementation(libs.utilcodex)
     
     // Test
     testImplementation(libs.junit)
