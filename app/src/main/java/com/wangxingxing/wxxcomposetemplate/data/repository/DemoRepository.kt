@@ -1,5 +1,6 @@
 package com.wangxingxing.wxxcomposetemplate.data.repository
 
+import com.blankj.utilcode.util.LogUtils
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiService
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.BingWallpaperService
@@ -63,7 +64,7 @@ class DemoRepository @Inject constructor(
             }
         } catch (e: Exception) {
             // 如果 API 调用失败，使用备用方案
-            android.util.Log.e("DemoRepository", "获取必应壁纸失败: ${e.message}")
+            LogUtils.e("获取必应壁纸失败: ${e.message}")
             getRandomImageUrl(index)
         }
     }

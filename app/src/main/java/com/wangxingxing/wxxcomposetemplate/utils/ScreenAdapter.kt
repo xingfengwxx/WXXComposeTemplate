@@ -1,7 +1,7 @@
 package com.wangxingxing.wxxcomposetemplate.utils
 
 import android.app.Application
-import android.util.Log
+import com.blankj.utilcode.util.LogUtils
 import me.jessyan.autosize.AutoSizeConfig
 import me.jessyan.autosize.onAdaptListener
 
@@ -13,8 +13,6 @@ import me.jessyan.autosize.onAdaptListener
  */
 object ScreenAdapter {
 
-    private const val TAG = "ScreenAdapter"
-
     /**
      * 初始化屏幕适配
      */
@@ -23,11 +21,11 @@ object ScreenAdapter {
             .setCustomFragment(true)
             .setOnAdaptListener(object : onAdaptListener {
                 override fun onAdaptBefore(target: Any?, activity: android.app.Activity?) {
-                    Log.d(TAG, "${target?.javaClass?.simpleName} onAdaptBefore!")
+                    LogUtils.d("ScreenAdapter: ${target?.javaClass?.simpleName} onAdaptBefore!")
                 }
 
                 override fun onAdaptAfter(target: Any?, activity: android.app.Activity?) {
-                    Log.d(TAG, "${target?.javaClass?.simpleName} onAdaptAfter!")
+                    LogUtils.d("ScreenAdapter: ${target?.javaClass?.simpleName} onAdaptAfter!")
                 }
             })
             .setLog(true)

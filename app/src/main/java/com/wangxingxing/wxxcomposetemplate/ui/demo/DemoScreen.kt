@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.blankj.utilcode.util.LogUtils
 
 /**
  * author : 王星星
@@ -133,7 +134,7 @@ fun DemoItemCard(
                     ),
                     onError = {
                         // 可以在这里添加错误日志
-                        android.util.Log.e("DemoItemCard", "图片加载失败: ${item.imageUrl}")
+                        LogUtils.e("DemoItemCard: 图片加载失败: ${item.imageUrl}")
                     }
                 )
             } else {
