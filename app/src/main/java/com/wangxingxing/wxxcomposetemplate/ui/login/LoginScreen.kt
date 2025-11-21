@@ -31,6 +31,7 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.getUiState().collectAsState()
     val loginResult by viewModel.loginResult.collectAsState()
+    val localUserInfo by viewModel.localUserInfo.collectAsState()
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -41,19 +42,13 @@ fun LoginScreen(
     val passwordHint = stringResource(R.string.login_password_hint)
     val loginButton = stringResource(R.string.login_button)
     val loggingIn = stringResource(R.string.login_logging_in)
+    val logoutButton = stringResource(R.string.login_logout)
 
-    // 获取登录成功的用户信息
-    val userInfo = when (val result = loginResult) {
+    // 获取用户信息（优先使用本地，其次使用登录结果）
+    val userInfo = localUserInfo ?: (when (val result = loginResult) {
         is ApiResult.Success -> result.data
         else -> null
-    }
-
-    // 监听登录成功
-    LaunchedEffect(loginResult) {
-        if (loginResult is ApiResult.Success) {
-            onLoginSuccess()
-        }
-    }
+    })
 
     Column(
         modifier = Modifier
@@ -63,7 +58,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = if (userInfo != null) Arrangement.Top else Arrangement.Center
     ) {
-        // 如果已登录成功，显示用户信息卡片
+        // 如果已登录成功，显示用户信息卡片和退出按钮
         if (userInfo != null) {
             UserInfoCard(
                 userInfo = userInfo,
@@ -71,6 +66,24 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(bottom = 24.dp)
             )
+
+            // 退出按钮
+            Button(
+                onClick = {
+                    viewModel.logout()
+                    // 清空输入框
+                    username = ""
+                    password = ""
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Text(logoutButton)
+            }
         } else {
             // 未登录时显示登录表单
             // 标题

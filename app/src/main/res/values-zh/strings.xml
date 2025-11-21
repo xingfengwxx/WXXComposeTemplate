@@ -35,4 +35,24 @@
     <!-- 错误信息 -->
     <string name="error_network_request_failed">网络请求失败</string>
     <string name="error_unknown">未知错误</string>
+    
+    <!-- 登录页面 -->
+    <string name="login_title">登录</string>
+    <string name="login_username_hint">用户名</string>
+    <string name="login_password_hint">密码</string>
+    <string name="login_button">登录</string>
+    <string name="login_logging_in">登录中...</string>
+    <string name="login_success">登录成功！欢迎，%1$s</string>
+    <string name="login_title_demo">登录示例</string>
+    <string name="login_content_demo">点击查看登录示例</string>
+    <string name="login_user_info_title">用户信息</string>
+    <string name="login_user_id">用户ID：</string>
+    <string name="login_username">用户名：</string>
+    <string name="login_email">邮箱：</string>
+    <string name="login_nickname">昵称：</string>
+    <string name="login_public_name">公开名称：</string>
+    <string name="login_token">令牌：</string>
+    <string name="login_unknown">未知</string>
+    <string name="login_logout">退出登录</string>
+    <string name="login_logout_confirmation">确定要退出登录吗？</string>
 </resources>

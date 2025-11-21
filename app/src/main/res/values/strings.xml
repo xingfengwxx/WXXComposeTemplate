@@ -53,4 +53,6 @@
     <string name="login_public_name">Public Name:</string>
     <string name="login_token">Token:</string>
     <string name="login_unknown">Unknown</string>
+    <string name="login_logout">Logout</string>
+    <string name="login_logout_confirmation">Are you sure you want to logout?</string>
 </resources>
