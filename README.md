@@ -73,32 +73,32 @@
 
 | 技术 | 版本 | 说明 |
 |------|------|------|
-| **Kotlin** | 2.0.21 | 主要开发语言 |
-| **Jetpack Compose** | 2024.09.00 | 现代 UI 框架 |
-| **Hilt** | 2.52 | 依赖注入框架 |
-| **Navigation** | 2.8.4 | 页面导航管理 |
+| **Kotlin** | 2.2.21 | 主要开发语言 |
+| **Jetpack Compose** | 2025.11.01 | 现代 UI 框架 |
+| **Hilt** | 2.57.2 | 依赖注入框架 |
+| **Navigation** | 2.9.6 | 页面导航管理 |
 
 ### 网络请求
 
 | 技术 | 版本 | 说明 |
 |------|------|------|
-| **Retrofit** | 2.11.0 | 网络请求框架 |
-| **OkHttp** | 4.12.0 | HTTP 客户端 |
-| **Gson** | 2.11.0 | JSON 解析 |
+| **Retrofit** | 3.0.0 | 网络请求框架 |
+| **OkHttp** | 5.3.1 | HTTP 客户端 |
+| **Gson** | 2.13.2 | JSON 解析 |
 
 ### 数据存储
 
 | 技术 | 版本 | 说明 |
 |------|------|------|
-| **Room** | 2.6.1 | 本地数据库 |
-| **DataStore** | 1.1.1 | 替代 SharedPreferences |
+| **Room** | 2.8.4 | 本地数据库 |
+| **DataStore** | 1.2.0 | 替代 SharedPreferences |
 
 ### 图片处理
 
 | 技术 | 版本 | 说明 |
 |------|------|------|
 | **Coil** | 2.7.0 | 图片加载库 |
-| **PictureSelector** | 3.12.0 | 图片选择器 |
+| **PictureSelector** | v3.11.2 | 图片选择器 |
 
 ### 媒体播放
 
@@ -111,15 +111,14 @@
 | 技术 | 版本 | 说明 |
 |------|------|------|
 | **DslTabLayout** | 3.0.0 | Tab 布局组件 |
-| **BaseRecyclerViewAdapterHelper** | 3.0.14 | RecyclerView 适配器 |
-| **BackgroundLibrary** | 1.6.5 | 背景形状库 |
+| **BaseRecyclerViewAdapterHelper** | 4.3.2 | RecyclerView 适配器 |
 | **MPAndroidChart** | 3.1.0 | 图表库 |
 
 ### 工具库
 
 | 技术 | 版本 | 说明 |
 |------|------|------|
-| **XXPermissions** | 18.6 | 权限管理 |
+| **XXPermissions** | 26.5 | 权限管理 |
 | **AndroidUtilCode** | 1.31.1 | 常用工具类 |
 | **AutoSize** | 1.2.1 | 屏幕适配 |
 
@@ -127,7 +126,7 @@
 
 | 技术 | 版本 | 说明 |
 |------|------|------|
-| **WorkManager** | 2.10.0 | 后台任务管理 |
+| **WorkManager** | 2.11.0 | 后台任务管理 |
 | **Startup** | 1.2.0 | 启动优化 |
 
 ---
@@ -334,7 +333,7 @@ sealed class ApiResult<out T> {
 ```kotlin
 /**
  * author : 王星星
- * date : 2024-12-19
+ * date : 2025/11/20 19:26
  * email : 1099420259@qq.com
  * description : 类功能说明
  */
@@ -392,7 +391,7 @@ sealed class ApiResult<out T> {
 **王星星**
 
 - Email: 1099420259@qq.com
-- Date: 2024-12-19
+- Date: 2025/11/20 19:26
 
 ---
 
