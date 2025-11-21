@@ -24,6 +24,7 @@ import javax.inject.Singleton
 object NetworkModule {
 
     private const val BASE_URL = "https://api.example.com/"
+    private const val WAN_ANDROID_BASE_URL = "https://www.wanandroid.com/"
 
     @Provides
     @Singleton
@@ -65,6 +66,23 @@ object NetworkModule {
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
+    }
+
+    /**
+     * 提供 wanandroid API 服务
+     */
+    @Provides
+    @Singleton
+    fun provideWanAndroidApiService(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): WanAndroidApiService {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(WAN_ANDROID_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+        return retrofit.create(WanAndroidApiService::class.java)
     }
     
     /**

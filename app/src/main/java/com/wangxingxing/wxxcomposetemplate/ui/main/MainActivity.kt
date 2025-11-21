@@ -25,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import com.wangxingxing.wxxcomposetemplate.ui.home.HomeScreen
 import com.wangxingxing.wxxcomposetemplate.ui.demo.DemoScreen
+import com.wangxingxing.wxxcomposetemplate.ui.login.LoginScreen
 import dagger.hilt.android.AndroidEntryPoint
 import ui.permission.PermissionScreen
 
@@ -70,6 +71,14 @@ fun MainScreen() {
             }
             composable("permission") {
                 PermissionScreen()
+            }
+            composable("login") {
+                LoginScreen(
+                    onLoginSuccess = {
+                        // 登录成功后可以执行的操作，比如返回上一页
+//                        navController.popBackStack()
+                    }
+                )
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.wangxingxing.wxxcomposetemplate.data.remote.api
 
-import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.*
 
 /**
  * author : 王星星
@@ -19,6 +18,28 @@ interface ApiService {
         @Query("page") page: Int = 1,
         @Query("size") size: Int = 20
     ): BaseResponse<List<DemoItem>>
+}
+
+/**
+ * author : 王星星
+ * date : 2025/11/20 19:26
+ * email : 1099420259@qq.com
+ * description : WanAndroid API 接口定义
+ */
+interface WanAndroidApiService {
+
+    /**
+     * 用户登录
+     * @param username 用户名
+     * @param password 密码
+     * @return 登录响应
+     */
+    @POST("user/login")
+    @FormUrlEncoded
+    suspend fun login(
+        @Field("username") username: String,
+        @Field("password") password: String
+    ): LoginResponse<UserInfo>
 }
 
 /**

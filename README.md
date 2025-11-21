@@ -333,7 +333,7 @@ sealed class ApiResult<out T> {
 ```kotlin
 /**
  * author : 王星星
- * date : 2025/11/20 19:26
+ * date : ${DATE} ${TIME} 
  * email : 1099420259@qq.com
  * description : 类功能说明
  */

@@ -35,4 +35,22 @@
     <!-- Error Messages -->
     <string name="error_network_request_failed">Network Request Failed</string>
     <string name="error_unknown">Unknown Error</string>
+    
+    <!-- Login Page -->
+    <string name="login_title">Login</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="login_logging_in">Logging in...</string>
+    <string name="login_success">Login successful! Welcome, %1$s</string>
+    <string name="login_title_demo">Login Example</string>
+    <string name="login_content_demo">Click to view login demo</string>
+    <string name="login_user_info_title">User Information</string>
+    <string name="login_user_id">User ID:</string>
+    <string name="login_username">Username:</string>
+    <string name="login_email">Email:</string>
+    <string name="login_nickname">Nickname:</string>
+    <string name="login_public_name">Public Name:</string>
+    <string name="login_token">Token:</string>
+    <string name="login_unknown">Unknown</string>
 </resources>

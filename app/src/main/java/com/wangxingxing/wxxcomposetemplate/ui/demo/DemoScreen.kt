@@ -36,6 +36,7 @@ fun DemoScreen(
     val uiState by viewModel.getUiState().collectAsState()
     // 获取字符串资源
     val permissionTitle = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.demo_permission_title)
+    val loginTitle = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.login_title_demo)
 
     Column(
         modifier = Modifier
@@ -84,10 +85,15 @@ fun DemoScreen(
                         DemoItemCard(
                             item = item,
                             permissionTitle = permissionTitle,
+                            loginTitle = loginTitle,
                             onClick = {
                                 // 点击权限请求示例时跳转到权限示例页面
                                 if (item.title == permissionTitle) {
                                     navController.navigate("permission")
+                                }
+                                // 点击登录示例时跳转到登录页面
+                                else if (item.title == loginTitle) {
+                                    navController.navigate("login")
                                 }
                             }
                         )
@@ -102,13 +108,14 @@ fun DemoScreen(
 fun DemoItemCard(
     item: com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem,
     permissionTitle: String,
+    loginTitle: String,
     onClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (item.title == permissionTitle) {
+                if (item.title == permissionTitle || item.title == loginTitle) {
                     Modifier.clickable { onClick() }
                 } else {
                     Modifier
