@@ -2,9 +2,9 @@ package com.wangxingxing.wxxcomposetemplate.utils
 
 import android.app.Activity
 import android.content.Context
-import com.hjq.permissions.OnPermissionCallback
-import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.base.IPermission
+import com.hjq.permissions.permission.PermissionLists
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -21,19 +21,14 @@ object PermissionHelper {
      */
     suspend fun requestPermission(
         activity: Activity,
-        permission: String
+        permission: IPermission
     ): Boolean = suspendCancellableCoroutine { continuation ->
         XXPermissions.with(activity)
             .permission(permission)
-            .request(object : OnPermissionCallback {
-                override fun onGranted(permissions: MutableList<String>, allGranted: Boolean) {
-                    continuation.resume(allGranted)
-                }
-
-                override fun onDenied(permissions: MutableList<String>, doNotAskAgain: Boolean) {
-                    continuation.resume(false)
-                }
-            })
+            .request { grantedList, deniedList ->
+                val allGranted = deniedList.isEmpty()
+                continuation.resume(allGranted)
+            }
     }
 
     /**
@@ -41,52 +36,48 @@ object PermissionHelper {
      */
     suspend fun requestPermissions(
         activity: Activity,
-        vararg permissions: String
+        vararg permissions: IPermission
     ): Boolean = suspendCancellableCoroutine { continuation ->
-        XXPermissions.with(activity)
-            .permission(*permissions)
-            .request(object : OnPermissionCallback {
-                override fun onGranted(permissions: MutableList<String>, allGranted: Boolean) {
-                    continuation.resume(allGranted)
-                }
-
-                override fun onDenied(permissions: MutableList<String>, doNotAskAgain: Boolean) {
-                    continuation.resume(false)
-                }
-            })
+        XXPermissions.with(activity).apply {
+            permissions.forEach { permission ->
+                permission(permission)
+            }
+        }.request { grantedList, deniedList ->
+            val allGranted = deniedList.isEmpty()
+            continuation.resume(allGranted)
+        }
     }
 
     /**
      * 检查权限是否已授予
      */
-    fun isGranted(context: Context, permission: String): Boolean {
-        return XXPermissions.isGranted(context, permission)
+    fun isGranted(context: Context, permission: IPermission): Boolean {
+        return XXPermissions.isGrantedPermission(context, permission)
     }
 
     /**
      * 检查多个权限是否都已授予
      */
-    fun isGranted(context: Context, vararg permissions: String): Boolean {
-        return XXPermissions.isGranted(context, *permissions)
+    fun isGranted(context: Context, vararg permissions: IPermission): Boolean {
+        return XXPermissions.isGrantedPermissions(context, permissions.toList())
     }
 
     /**
      * 请求存储权限
+     * 注意：当 targetSdk >= 30 时，只能申请 MANAGE_EXTERNAL_STORAGE 权限
+     * 框架会自动在低版本设备上适配 READ_EXTERNAL_STORAGE 和 WRITE_EXTERNAL_STORAGE
      */
     suspend fun requestStoragePermission(activity: Activity): Boolean {
-        return requestPermissions(
-            activity,
-            Permission.MANAGE_EXTERNAL_STORAGE,
-            Permission.READ_EXTERNAL_STORAGE,
-            Permission.WRITE_EXTERNAL_STORAGE
-        )
+        // 根据 XXPermissions 文档，targetSdk >= 30 时只申请 MANAGE_EXTERNAL_STORAGE
+        // 框架会自动在低版本设备上适配其他存储权限
+        return requestPermission(activity, PermissionLists.getManageExternalStoragePermission())
     }
 
     /**
      * 请求相机权限
      */
     suspend fun requestCameraPermission(activity: Activity): Boolean {
-        return requestPermission(activity, Permission.CAMERA)
+        return requestPermission(activity, PermissionLists.getCameraPermission())
     }
 
     /**
@@ -95,8 +86,8 @@ object PermissionHelper {
     suspend fun requestLocationPermission(activity: Activity): Boolean {
         return requestPermissions(
             activity,
-            Permission.ACCESS_FINE_LOCATION,
-            Permission.ACCESS_COARSE_LOCATION
+            PermissionLists.getAccessFineLocationPermission(),
+            PermissionLists.getAccessCoarseLocationPermission()
         )
     }
 }

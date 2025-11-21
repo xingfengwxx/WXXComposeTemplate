@@ -57,15 +57,6 @@ kapt {
     correctErrorTypes = true
     useBuildCache = true
     includeCompileClasspath = false
-    javacOptions {
-        option("-Xmaxerrs", 500)
-        option("-Xmaxwarns", 500)
-    }
-    // 如果遇到内存问题，可以启用以下配置
-    // arguments {
-    //     arg("room.incremental", "true")
-    //     arg("room.schemaLocation", "$projectDir/schemas")
-    // }
 }
 
 dependencies {
@@ -82,6 +73,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.navigation)
     
     // Navigation
@@ -141,7 +133,9 @@ dependencies {
     implementation(libs.xxpermissions.core)
     
     // Utils
-    implementation(libs.utilcodex)
+    implementation(libs.utilcodex) {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
+    }
     
     // Test
     testImplementation(libs.junit)

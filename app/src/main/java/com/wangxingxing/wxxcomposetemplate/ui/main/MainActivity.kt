@@ -72,8 +72,8 @@ fun MainScreen() {
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val navBackStackEntryState = navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntryState.value?.destination?.route
 
     NavigationBar {
         NavigationBarItem(
@@ -81,7 +81,7 @@ fun BottomNavigationBar(navController: NavController) {
             onClick = { navController.navigate("home") },
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Home,
+                    imageVector = Icons.Filled.Home,
                     contentDescription = "首页"
                 )
             },
@@ -92,7 +92,7 @@ fun BottomNavigationBar(navController: NavController) {
             onClick = { navController.navigate("demo") },
             icon = {
                 Icon(
-                    imageVector = Icons.Default.List,
+                    imageVector = Icons.Filled.List,
                     contentDescription = "示例"
                 )
             },
