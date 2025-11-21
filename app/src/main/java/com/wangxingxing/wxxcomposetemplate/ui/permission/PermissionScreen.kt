@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import com.wangxingxing.wxxcomposetemplate.utils.permission.PermissionHelper
 import com.wangxingxing.wxxcomposetemplate.R
-import com.wangxingxing.wxxcomposetemplate.ext.getString
 
 /**
  * author : 王星星
