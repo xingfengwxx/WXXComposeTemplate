@@ -66,4 +66,22 @@ object NetworkModule {
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
+    
+    /**
+     * 提供必应壁纸服务
+     * 直接创建 Retrofit 实例并返回服务
+     */
+    @Provides
+    @Singleton
+    fun provideBingWallpaperService(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): BingWallpaperService {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://cn.bing.com/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+        return retrofit.create(BingWallpaperService::class.java)
+    }
 }

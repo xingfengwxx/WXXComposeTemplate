@@ -2,6 +2,7 @@ package com.wangxingxing.wxxcomposetemplate.data.repository
 
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiService
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.BingWallpaperService
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,7 +15,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class DemoRepository @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val bingWallpaperService: BingWallpaperService
 ) {
     /**
      * 获取列表数据
@@ -29,6 +31,71 @@ class DemoRepository @Inject constructor(
     }
 
     /**
+     * 获取必应壁纸图片 URL
+     * 使用必应官方 API 获取壁纸链接
+     * @param index 日期索引，0 表示今天，1 表示昨天，以此类推（最大支持 7 天）
+     * @return 必应壁纸图片 URL，如果获取失败则返回空字符串
+     */
+    private suspend fun getBingWallpaperImageUrl(index: Int): String {
+        return try {
+            // 使用必应官方 API
+            // idx 参数：0=今天，1=昨天，2=前天，以此类推（最大 7）
+            val idx = index.coerceIn(0, 7)
+            // 调用必应壁纸 API
+            val response = bingWallpaperService.getWallpaper(
+                format = "js",
+                idx = idx,
+                n = 1,
+                mkt = "zh-CN"
+            )
+            // 从响应中提取图片 URL
+            if (response.images.isNotEmpty()) {
+                val imageUrl = response.images[0].url
+                // 拼接完整 URL
+                if (imageUrl.startsWith("http")) {
+                    imageUrl
+                } else {
+                    "https://cn.bing.com$imageUrl"
+                }
+            } else {
+                // 如果获取失败，使用备用方案
+                getRandomImageUrl(index)
+            }
+        } catch (e: Exception) {
+            // 如果 API 调用失败，使用备用方案
+            android.util.Log.e("DemoRepository", "获取必应壁纸失败: ${e.message}")
+            getRandomImageUrl(index)
+        }
+    }
+    
+    /**
+     * 获取随机图片 URL（用于确保每个 item 显示不同的图片）
+     * @param seed 随机种子，用于生成不同的图片
+     * @return 图片 URL
+     */
+    private fun getRandomImageUrl(seed: Int): String {
+        // 使用一个支持随机参数的图片服务
+        // 通过不同的 seed 值确保每个 item 显示不同的图片
+        // Picsum Photos 的 seed 功能可以确保相同的 seed 返回相同的图片
+        return "https://picsum.photos/seed/$seed/200/200"
+    }
+    
+    /**
+     * 获取图片 URL（统一入口，确保每个 item 显示不同的图片）
+     * @param itemId item 的唯一标识
+     * @return 图片 URL
+     */
+    private suspend fun getImageUrl(itemId: Int): String {
+        // 对于前 8 个 item，使用必应壁纸（索引 0-7）
+        // 对于超过 8 个的 item，使用随机图片服务，通过 itemId 作为 seed 确保每个都不同
+        return if (itemId <= 8) {
+            getBingWallpaperImageUrl(itemId - 1)
+        } else {
+            getRandomImageUrl(itemId)
+        }
+    }
+
+    /**
      * 模拟获取本地数据（用于演示）
      */
     suspend fun getMockListData(): List<DemoItem> {
@@ -39,17 +106,20 @@ class DemoRepository @Inject constructor(
                 id = 1,
                 title = "权限请求示例",
                 content = "点击查看权限请求功能演示",
-                imageUrl = "https://picsum.photos/200/200?random=1"
+                imageUrl = getImageUrl(1)
             )
         )
         // 其他示例数据
+        // 确保每个 item 显示不同的图片
+        // 对于前 8 个 item，使用必应壁纸 API 获取真实壁纸
+        // 对于超过 8 个的 item，使用随机图片服务
         (2..20).forEach { index ->
             list.add(
                 DemoItem(
                     id = index,
                     title = "标题 $index",
                     content = "这是第 $index 条内容",
-                    imageUrl = "https://picsum.photos/200/200?random=$index"
+                    imageUrl = getImageUrl(index)
                 )
             )
         }

@@ -124,7 +124,17 @@ fun DemoItemCard(
                     modifier = Modifier
                         .size(80.dp)
                         .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    placeholder = androidx.compose.ui.graphics.painter.ColorPainter(
+                        MaterialTheme.colorScheme.surfaceVariant
+                    ),
+                    error = androidx.compose.ui.graphics.painter.ColorPainter(
+                        MaterialTheme.colorScheme.errorContainer
+                    ),
+                    onError = {
+                        // 可以在这里添加错误日志
+                        android.util.Log.e("DemoItemCard", "图片加载失败: ${item.imageUrl}")
+                    }
                 )
             } else {
                 // 占位符
