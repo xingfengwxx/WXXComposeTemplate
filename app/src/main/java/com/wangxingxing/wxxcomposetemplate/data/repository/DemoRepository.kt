@@ -37,8 +37,8 @@ class DemoRepository @Inject constructor(
         list.add(
             DemoItem(
                 id = 1,
-                title = "标题 1",
-                content = "权限请求示例 - 点击查看权限请求功能演示",
+                title = "权限请求示例",
+                content = "点击查看权限请求功能演示",
                 imageUrl = "https://picsum.photos/200/200?random=1"
             )
         )
