@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import com.wangxingxing.wxxcomposetemplate.ui.home.HomeScreen
 import com.wangxingxing.wxxcomposetemplate.ui.demo.DemoScreen
+import com.wangxingxing.wxxcomposetemplate.ui.permission.PermissionScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -64,7 +65,10 @@ fun MainScreen() {
                 HomeScreen()
             }
             composable("demo") {
-                DemoScreen()
+                DemoScreen(navController = navController)
+            }
+            composable("permission") {
+                PermissionScreen()
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.wangxingxing.wxxcomposetemplate.ui.demo
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 
 /**
  * author : 王星星
@@ -20,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
  */
 @Composable
 fun DemoScreen(
+    navController: NavController,
     viewModel: DemoViewModel = hiltViewModel()
 ) {
     val items by viewModel.items.collectAsState()
@@ -69,7 +72,15 @@ fun DemoScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(items) { item ->
-                        DemoItemCard(item = item)
+                        DemoItemCard(
+                            item = item,
+                            onClick = {
+                                // 点击标题 1 时跳转到权限示例页面
+                                if (item.title == "标题 1") {
+                                    navController.navigate("permission")
+                                }
+                            }
+                        )
                     }
                 }
             }
@@ -78,9 +89,20 @@ fun DemoScreen(
 }
 
 @Composable
-fun DemoItemCard(item: com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem) {
+fun DemoItemCard(
+    item: com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem,
+    onClick: () -> Unit = {}
+) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(
+                if (item.title == "标题 1") {
+                    Modifier.clickable { onClick() }
+                } else {
+                    Modifier
+                }
+            ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(

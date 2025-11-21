@@ -70,7 +70,13 @@ object PermissionHelper {
     suspend fun requestStoragePermission(activity: Activity): Boolean {
         // 根据 XXPermissions 文档，targetSdk >= 30 时只申请 MANAGE_EXTERNAL_STORAGE
         // 框架会自动在低版本设备上适配其他存储权限
-        return requestPermission(activity, PermissionLists.getManageExternalStoragePermission())
+        return requestPermissions(
+            activity,
+            PermissionLists.getReadMediaImagesPermission(),
+            PermissionLists.getReadMediaVideoPermission(),
+            PermissionLists.getReadMediaAudioPermission(),
+            PermissionLists.getReadMediaVisualUserSelectedPermission()
+        )
     }
 
     /**

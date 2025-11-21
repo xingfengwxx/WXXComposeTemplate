@@ -32,13 +32,27 @@ class DemoRepository @Inject constructor(
      * 模拟获取本地数据（用于演示）
      */
     suspend fun getMockListData(): List<DemoItem> {
-        return (1..20).map { index ->
+        val list = mutableListOf<DemoItem>()
+        // 第一个 item 是权限示例
+        list.add(
             DemoItem(
-                id = index,
-                title = "标题 $index",
-                content = "这是第 $index 条内容",
-                imageUrl = "https://picsum.photos/200/200?random=$index"
+                id = 1,
+                title = "标题 1",
+                content = "权限请求示例 - 点击查看权限请求功能演示",
+                imageUrl = "https://picsum.photos/200/200?random=1"
+            )
+        )
+        // 其他示例数据
+        (2..20).forEach { index ->
+            list.add(
+                DemoItem(
+                    id = index,
+                    title = "标题 $index",
+                    content = "这是第 $index 条内容",
+                    imageUrl = "https://picsum.photos/200/200?random=$index"
+                )
             )
         }
+        return list
     }
 }
