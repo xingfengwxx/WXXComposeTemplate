@@ -1,10 +1,10 @@
-package com.wangxingxing.wxxcomposetemplate.utils
+package com.wangxingxing.wxxcomposetemplate.utils.permission
 
 import android.app.Activity
 import android.content.Context
 import com.hjq.permissions.XXPermissions
-import com.hjq.permissions.permission.base.IPermission
 import com.hjq.permissions.permission.PermissionLists
+import com.hjq.permissions.permission.base.IPermission
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -25,6 +25,8 @@ object PermissionHelper {
     ): Boolean = suspendCancellableCoroutine { continuation ->
         XXPermissions.with(activity)
             .permission(permission)
+            .interceptor(PermissionInterceptor())
+            .description(PermissionDescription())
             .request { grantedList, deniedList ->
                 val allGranted = deniedList.isEmpty()
                 continuation.resume(allGranted)
@@ -42,7 +44,10 @@ object PermissionHelper {
             permissions.forEach { permission ->
                 permission(permission)
             }
-        }.request { grantedList, deniedList ->
+        }
+            .interceptor(PermissionInterceptor())
+            .description(PermissionDescription())
+            .request { grantedList, deniedList ->
             val allGranted = deniedList.isEmpty()
             continuation.resume(allGranted)
         }

@@ -47,6 +47,8 @@ autosize = "1.2.1"
 
 # Permission
 xxpermissions = "26.5"
+# Toaster
+toaster = "13.8"
 
 # Utils
 utilcodex = "1.31.1"
@@ -126,6 +128,8 @@ autosize-core = { group = "me.jessyan", name = "autosize", version.ref = "autosi
 
 # Permission
 xxpermissions-core = { group = "com.github.getActivity", name = "XXPermissions", version.ref = "xxpermissions" }
+# Toaster
+toaster = { group = "com.github.getActivity", name = "Toaster", version.ref = "toaster"}
 
 # Utils
 utilcodex = { group = "com.blankj", name = "utilcodex", version.ref = "utilcodex"}

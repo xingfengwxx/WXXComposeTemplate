@@ -17,8 +17,8 @@ android {
         applicationId = "com.wangxingxing.wxxcomposetemplate"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 100
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -131,6 +131,8 @@ dependencies {
     
     // Permission
     implementation(libs.xxpermissions.core)
+    // Toaster
+    implementation(libs.toaster)
     
     // Utils
     implementation(libs.utilcodex) {
