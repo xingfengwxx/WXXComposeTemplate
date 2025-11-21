@@ -1,6 +1,7 @@
 package com.wangxingxing.wxxcomposetemplate.base
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +14,7 @@ import kotlinx.coroutines.launch
  * email : 1099420259@qq.com
  * description : ViewModel 基类，提供通用状态管理
  */
-abstract class BaseViewModel : ViewModel() {
+abstract class BaseViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * UI 状态
@@ -51,7 +52,10 @@ abstract class BaseViewModel : ViewModel() {
      * 错误处理
      */
     protected open fun handleError(e: Exception) {
-        updateUiState(UiState.Error(e.message ?: "未知错误"))
+        val errorMessage = e.message ?: getApplication<Application>().getString(
+            com.wangxingxing.wxxcomposetemplate.R.string.error_unknown
+        )
+        updateUiState(UiState.Error(errorMessage))
     }
 }
 

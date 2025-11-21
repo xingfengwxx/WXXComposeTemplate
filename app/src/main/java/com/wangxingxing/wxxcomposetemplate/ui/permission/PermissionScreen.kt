@@ -1,4 +1,4 @@
-package com.wangxingxing.wxxcomposetemplate.ui.permission
+package ui.permission
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.*
@@ -7,9 +7,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.wangxingxing.wxxcomposetemplate.utils.permission.PermissionHelper
 import kotlinx.coroutines.launch
+import com.wangxingxing.wxxcomposetemplate.utils.permission.PermissionHelper
+import com.wangxingxing.wxxcomposetemplate.R
+import com.wangxingxing.wxxcomposetemplate.ext.getString
 
 /**
  * author : 王星星
@@ -21,7 +24,18 @@ import kotlinx.coroutines.launch
 fun PermissionScreen() {
     val activity = LocalActivity.current
     val scope = rememberCoroutineScope()
-    var permissionStatus by remember { mutableStateOf("未请求") }
+    val initialStatus = stringResource(R.string.permission_not_requested)
+    var permissionStatus by remember { 
+        mutableStateOf(initialStatus)
+    }
+    
+    // 预先获取所有需要的字符串资源
+    val permissionTitle = stringResource(R.string.permission_title)
+    val permissionGranted = stringResource(R.string.permission_granted)
+    val permissionDenied = stringResource(R.string.permission_denied)
+    val permissionNeedActivity = stringResource(R.string.permission_need_activity)
+    val permissionRequestStorage = stringResource(R.string.permission_request_storage)
+    val permissionRequestCamera = stringResource(R.string.permission_request_camera)
 
     Column(
         modifier = Modifier
@@ -31,12 +45,12 @@ fun PermissionScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "权限请求示例",
+            text = permissionTitle,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
         Text(
-            text = "状态: $permissionStatus",
+            text = stringResource(R.string.permission_status, permissionStatus),
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -45,15 +59,19 @@ fun PermissionScreen() {
                 scope.launch {
                     if (activity != null) {
                         val granted = PermissionHelper.requestStoragePermission(activity)
-                        permissionStatus = if (granted) "已授予" else "已拒绝"
+                        permissionStatus = if (granted) {
+                            permissionGranted
+                        } else {
+                            permissionDenied
+                        }
                     } else {
-                        permissionStatus = "需要 Activity 上下文"
+                        permissionStatus = permissionNeedActivity
                     }
                 }
             },
             modifier = Modifier.padding(vertical = 8.dp)
         ) {
-            Text("请求存储权限")
+            Text(permissionRequestStorage)
         }
 
         Button(
@@ -61,15 +79,19 @@ fun PermissionScreen() {
                 scope.launch {
                     if (activity != null) {
                         val granted = PermissionHelper.requestCameraPermission(activity)
-                        permissionStatus = if (granted) "已授予" else "已拒绝"
+                        permissionStatus = if (granted) {
+                            permissionGranted
+                        } else {
+                            permissionDenied
+                        }
                     } else {
-                        permissionStatus = "需要 Activity 上下文"
+                        permissionStatus = permissionNeedActivity
                     }
                 }
             },
             modifier = Modifier.padding(vertical = 8.dp)
         ) {
-            Text("请求相机权限")
+            Text(permissionRequestCamera)
         }
     }
 }

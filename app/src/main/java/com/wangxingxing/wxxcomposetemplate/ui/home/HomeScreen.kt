@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 /**
@@ -26,7 +27,7 @@ fun HomeScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "欢迎使用 Android 架构模板",
+            text = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.home_welcome),
             modifier = Modifier.padding(bottom = 16.dp)
         )
         
@@ -34,11 +35,11 @@ fun HomeScreen() {
             onClick = { clickCount++ },
             modifier = Modifier.padding(vertical = 8.dp)
         ) {
-            Text("点击次数: $clickCount")
+            Text(stringResource(com.wangxingxing.wxxcomposetemplate.R.string.home_click_count, clickCount))
         }
         
         Text(
-            text = "这是 Compose 示例页面",
+            text = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.home_compose_example),
             modifier = Modifier.padding(top = 16.dp)
         )
     }

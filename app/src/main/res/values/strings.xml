@@ -1,3 +1,38 @@
 <resources>
     <string name="app_name">WXXComposeTemplate</string>
+    
+    <!-- Navigation Bar -->
+    <string name="nav_home">Home</string>
+    <string name="nav_demo">Demo</string>
+    
+    <!-- Demo List Page -->
+    <string name="demo_list_title">Demo List</string>
+    <string name="demo_refresh">Refresh</string>
+    <string name="demo_error">Error: %1$s</string>
+    <string name="demo_no_image">No Image</string>
+    
+    <!-- Home Page -->
+    <string name="home_welcome">Welcome to Android Architecture Template</string>
+    <string name="home_click_count">Click Count: %1$d</string>
+    <string name="home_compose_example">This is a Compose Example Page</string>
+    
+    <!-- Permission Request Page -->
+    <string name="permission_title">Permission Request Example</string>
+    <string name="permission_status">Status: %1$s</string>
+    <string name="permission_not_requested">Not Requested</string>
+    <string name="permission_granted">Granted</string>
+    <string name="permission_denied">Denied</string>
+    <string name="permission_need_activity">Activity Context Required</string>
+    <string name="permission_request_storage">Request Storage Permission</string>
+    <string name="permission_request_camera">Request Camera Permission</string>
+    
+    <!-- Demo Data -->
+    <string name="demo_permission_title">Permission Request Example</string>
+    <string name="demo_permission_content">Click to view permission request demo</string>
+    <string name="demo_item_title">Title %1$d</string>
+    <string name="demo_item_content">This is item %1$d</string>
+    
+    <!-- Error Messages -->
+    <string name="error_network_request_failed">Network Request Failed</string>
+    <string name="error_unknown">Unknown Error</string>
 </resources>

@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.blankj.utilcode.util.LogUtils
+import androidx.compose.ui.res.stringResource
 
 /**
  * author : 王星星
@@ -33,6 +34,8 @@ fun DemoScreen(
 ) {
     val items by viewModel.items.collectAsState()
     val uiState by viewModel.getUiState().collectAsState()
+    // 获取字符串资源
+    val permissionTitle = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.demo_permission_title)
 
     Column(
         modifier = Modifier
@@ -46,11 +49,11 @@ fun DemoScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "示例列表",
+                text = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.demo_list_title),
                 style = MaterialTheme.typography.headlineMedium
             )
             Button(onClick = { viewModel.refresh() }) {
-                Text("刷新")
+                Text(stringResource(com.wangxingxing.wxxcomposetemplate.R.string.demo_refresh))
             }
         }
 
@@ -68,7 +71,7 @@ fun DemoScreen(
             }
             is com.wangxingxing.wxxcomposetemplate.base.UiState.Error -> {
                 Text(
-                    text = "错误: ${state.message}",
+                    text = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.demo_error, state.message),
                     color = MaterialTheme.colorScheme.error
                 )
             }
@@ -80,9 +83,10 @@ fun DemoScreen(
                     items(items) { item ->
                         DemoItemCard(
                             item = item,
+                            permissionTitle = permissionTitle,
                             onClick = {
-                                // 点击标题 1 时跳转到权限示例页面
-                                if (item.title == "权限请求示例") {
+                                // 点击权限请求示例时跳转到权限示例页面
+                                if (item.title == permissionTitle) {
                                     navController.navigate("permission")
                                 }
                             }
@@ -97,13 +101,14 @@ fun DemoScreen(
 @Composable
 fun DemoItemCard(
     item: com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem,
+    permissionTitle: String,
     onClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (item.title == "权限请求示例") {
+                if (item.title == permissionTitle) {
                     Modifier.clickable { onClick() }
                 } else {
                     Modifier
@@ -147,7 +152,7 @@ fun DemoItemCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "无图",
+                        text = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.demo_no_image),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

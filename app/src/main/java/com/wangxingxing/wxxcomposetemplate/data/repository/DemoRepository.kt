@@ -1,10 +1,12 @@
 package com.wangxingxing.wxxcomposetemplate.data.repository
 
+import android.content.Context
 import com.blankj.utilcode.util.LogUtils
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiService
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.BingWallpaperService
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,7 +19,8 @@ import javax.inject.Singleton
 @Singleton
 class DemoRepository @Inject constructor(
     private val apiService: ApiService,
-    private val bingWallpaperService: BingWallpaperService
+    private val bingWallpaperService: BingWallpaperService,
+    @ApplicationContext private val context: Context
 ) {
     /**
      * 获取列表数据
@@ -27,7 +30,7 @@ class DemoRepository @Inject constructor(
             val response = apiService.getListData(page, size)
             response.toApiResult()
         } catch (e: Exception) {
-            ApiResult.Error(-1, e.message ?: "网络请求失败")
+            ApiResult.Error(-1, e.message ?: context.getString(com.wangxingxing.wxxcomposetemplate.R.string.error_network_request_failed))
         }
     }
 
@@ -105,8 +108,8 @@ class DemoRepository @Inject constructor(
         list.add(
             DemoItem(
                 id = 1,
-                title = "权限请求示例",
-                content = "点击查看权限请求功能演示",
+                title = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.demo_permission_title),
+                content = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.demo_permission_content),
                 imageUrl = getImageUrl(1)
             )
         )
@@ -118,8 +121,8 @@ class DemoRepository @Inject constructor(
             list.add(
                 DemoItem(
                     id = index,
-                    title = "标题 $index",
-                    content = "这是第 $index 条内容",
+                    title = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.demo_item_title, index),
+                    content = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.demo_item_content, index),
                     imageUrl = getImageUrl(index)
                 )
             )

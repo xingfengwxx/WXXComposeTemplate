@@ -1,5 +1,6 @@
 package com.wangxingxing.wxxcomposetemplate.ui.demo
 
+import android.app.Application
 import androidx.lifecycle.viewModelScope
 import com.wangxingxing.wxxcomposetemplate.base.BaseViewModel
 import com.wangxingxing.wxxcomposetemplate.base.UiState
@@ -19,8 +20,9 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class DemoViewModel @Inject constructor(
+    application: Application,
     private val repository: DemoRepository
-) : BaseViewModel() {
+) : BaseViewModel(application) {
 
     override val uiState = MutableStateFlow<UiState>(UiState.Idle)
 

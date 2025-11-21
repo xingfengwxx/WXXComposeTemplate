@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,8 +25,8 @@ import androidx.navigation.compose.rememberNavController
 import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import com.wangxingxing.wxxcomposetemplate.ui.home.HomeScreen
 import com.wangxingxing.wxxcomposetemplate.ui.demo.DemoScreen
-import com.wangxingxing.wxxcomposetemplate.ui.permission.PermissionScreen
 import dagger.hilt.android.AndroidEntryPoint
+import ui.permission.PermissionScreen
 
 /**
  * author : 王星星
@@ -86,10 +87,10 @@ fun BottomNavigationBar(navController: NavController) {
             icon = {
                 Icon(
                     imageVector = Icons.Filled.Home,
-                    contentDescription = "首页"
+                    contentDescription = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.nav_home)
                 )
             },
-            label = { Text("首页") }
+            label = { Text(stringResource(com.wangxingxing.wxxcomposetemplate.R.string.nav_home)) }
         )
         NavigationBarItem(
             selected = currentRoute == "demo",
@@ -97,10 +98,10 @@ fun BottomNavigationBar(navController: NavController) {
             icon = {
                 Icon(
                     imageVector = Icons.Filled.List,
-                    contentDescription = "示例"
+                    contentDescription = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.nav_demo)
                 )
             },
-            label = { Text("示例") }
+            label = { Text(stringResource(com.wangxingxing.wxxcomposetemplate.R.string.nav_demo)) }
         )
     }
 }
