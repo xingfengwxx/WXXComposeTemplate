@@ -40,6 +40,13 @@ interface WanAndroidApiService {
         @Field("username") username: String,
         @Field("password") password: String
     ): LoginResponse<UserInfo>
+    
+    /**
+     * 获取项目分类
+     * @return 项目分类响应
+     */
+    @GET("project/tree/json")
+    suspend fun getProjectTree(): ProjectCategoryResponse
 }
 
 /**

@@ -26,6 +26,7 @@ import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import com.wangxingxing.wxxcomposetemplate.ui.home.HomeScreen
 import com.wangxingxing.wxxcomposetemplate.ui.demo.DemoScreen
 import com.wangxingxing.wxxcomposetemplate.ui.login.LoginScreen
+import com.wangxingxing.wxxcomposetemplate.ui.projectcategory.ProjectCategoryScreen
 import dagger.hilt.android.AndroidEntryPoint
 import ui.permission.PermissionScreen
 
@@ -79,6 +80,9 @@ fun MainScreen() {
 //                        navController.popBackStack()
                     }
                 )
+            }
+            composable("project_category") {
+                ProjectCategoryScreen()
             }
         }
     }

@@ -122,11 +122,20 @@ class DemoRepository @Inject constructor(
                 imageUrl = getImageUrl(2)
             )
         )
+        // 第三个 item 是 Room 数据库示例
+        list.add(
+            DemoItem(
+                id = 3,
+                title = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.project_category_title_demo),
+                content = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.project_category_content_demo),
+                imageUrl = getImageUrl(3)
+            )
+        )
         // 其他示例数据
         // 确保每个 item 显示不同的图片
         // 对于前 8 个 item，使用必应壁纸 API 获取真实壁纸
         // 对于超过 8 个的 item，使用随机图片服务
-        (3..20).forEach { index ->
+        (4..20).forEach { index ->
             list.add(
                 DemoItem(
                     id = index,
