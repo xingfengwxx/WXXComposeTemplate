@@ -47,22 +47,111 @@ fun getThemeColor(colorIndex: Int): Color {
 fun getColorScheme(themeColor: Color, darkTheme: Boolean): androidx.compose.material3.ColorScheme {
     val primary = themeColor
     val onPrimary = Color.White
-    val primaryContainer = if (darkTheme) themeColor.copy(alpha = 0.3f) else themeColor.copy(alpha = 0.1f)
-    val onPrimaryContainer = if (darkTheme) themeColor else themeColor
+    
+    // 根据主题色生成背景和表面颜色，使其与主题色协调
+    val background = if (darkTheme) {
+        // 深色主题：使用主题色的深色变体作为背景
+        // 将主题色与深色背景混合，产生协调的深色背景
+        val darkBase = Color(0xFF121212)
+        Color(
+            red = (darkBase.red * 0.7f + themeColor.red * 0.3f).coerceIn(0f, 1f),
+            green = (darkBase.green * 0.7f + themeColor.green * 0.3f).coerceIn(0f, 1f),
+            blue = (darkBase.blue * 0.7f + themeColor.blue * 0.3f).coerceIn(0f, 1f),
+            alpha = 1f
+        )
+    } else {
+        // 浅色主题：使用主题色的极浅色变体作为背景
+        // 将主题色与浅色背景混合，产生协调的浅色背景
+        val lightBase = Color(0xFFFFFBFE)
+        Color(
+            red = (lightBase.red * 0.95f + themeColor.red * 0.05f).coerceIn(0f, 1f),
+            green = (lightBase.green * 0.95f + themeColor.green * 0.05f).coerceIn(0f, 1f),
+            blue = (lightBase.blue * 0.95f + themeColor.blue * 0.05f).coerceIn(0f, 1f),
+            alpha = 1f
+        )
+    }
+    
+    val surface = if (darkTheme) {
+        // 深色主题：表面颜色稍亮于背景，也融入主题色
+        Color(
+            red = (background.red * 0.9f + themeColor.red * 0.1f).coerceIn(0f, 1f),
+            green = (background.green * 0.9f + themeColor.green * 0.1f).coerceIn(0f, 1f),
+            blue = (background.blue * 0.9f + themeColor.blue * 0.1f).coerceIn(0f, 1f),
+            alpha = 1f
+        )
+    } else {
+        // 浅色主题：表面颜色为白色或极浅色，融入主题色
+        Color(
+            red = (background.red * 0.98f + themeColor.red * 0.02f).coerceIn(0f, 1f),
+            green = (background.green * 0.98f + themeColor.green * 0.02f).coerceIn(0f, 1f),
+            blue = (background.blue * 0.98f + themeColor.blue * 0.02f).coerceIn(0f, 1f),
+            alpha = 1f
+        )
+    }
+    
+    val surfaceVariant = if (darkTheme) {
+        // 深色主题：表面变体颜色，融入更多主题色
+        Color(
+            red = (background.red * 0.8f + themeColor.red * 0.2f).coerceIn(0f, 1f),
+            green = (background.green * 0.8f + themeColor.green * 0.2f).coerceIn(0f, 1f),
+            blue = (background.blue * 0.8f + themeColor.blue * 0.2f).coerceIn(0f, 1f),
+            alpha = 1f
+        )
+    } else {
+        // 浅色主题：表面变体颜色，融入主题色
+        Color(
+            red = (background.red * 0.92f + themeColor.red * 0.08f).coerceIn(0f, 1f),
+            green = (background.green * 0.92f + themeColor.green * 0.08f).coerceIn(0f, 1f),
+            blue = (background.blue * 0.92f + themeColor.blue * 0.08f).coerceIn(0f, 1f),
+            alpha = 1f
+        )
+    }
+    
+    val primaryContainer = if (darkTheme) {
+        themeColor.copy(alpha = 0.3f)
+    } else {
+        themeColor.copy(alpha = 0.1f)
+    }
+    
+    val onPrimaryContainer = if (darkTheme) {
+        themeColor.copy(
+            red = (themeColor.red * 0.8f).coerceIn(0f, 1f),
+            green = (themeColor.green * 0.8f).coerceIn(0f, 1f),
+            blue = (themeColor.blue * 0.8f).coerceIn(0f, 1f)
+        )
+    } else {
+        themeColor
+    }
+    
+    val onBackground = if (darkTheme) Color.White else Color(0xFF1C1B1F)
+    val onSurface = if (darkTheme) Color.White else Color(0xFF1C1B1F)
+    val onSurfaceVariant = if (darkTheme) Color(0xFFCAC4D0) else Color(0xFF49454F)
     
     return if (darkTheme) {
         darkColorScheme(
             primary = primary,
             onPrimary = onPrimary,
             primaryContainer = primaryContainer,
-            onPrimaryContainer = onPrimaryContainer
+            onPrimaryContainer = onPrimaryContainer,
+            background = background,
+            onBackground = onBackground,
+            surface = surface,
+            onSurface = onSurface,
+            surfaceVariant = surfaceVariant,
+            onSurfaceVariant = onSurfaceVariant
         )
     } else {
         lightColorScheme(
             primary = primary,
             onPrimary = onPrimary,
             primaryContainer = primaryContainer,
-            onPrimaryContainer = onPrimaryContainer
+            onPrimaryContainer = onPrimaryContainer,
+            background = background,
+            onBackground = onBackground,
+            surface = surface,
+            onSurface = onSurface,
+            surfaceVariant = surfaceVariant,
+            onSurfaceVariant = onSurfaceVariant
         )
     }
 }
