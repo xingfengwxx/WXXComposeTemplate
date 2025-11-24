@@ -4,6 +4,26 @@
 
 我使用AndroidStudio创建了一个空的AndroidCompose项目，将Kotlin作为首选语言，项目基础架构使用Jetpack搭建，并且按照我上传附件的技术架构图对当前项目改造，生成Cursor命令
 
+## 技术架构要求
+
+- **语言：** Kotlin
+- **UI框架：** Jetpack Compose
+- **架构模式：** MVVM
+- **依赖注入：** Hilt
+- **网络请求：** Retrofit + OkHttp
+- **本地数据库：** Room
+- **状态管理：** StateFlow / Flow
+- **协程：** Kotlin Coroutines
+
+## 代码规范
+
+- 所有类必须使用 KDoc 注释
+- 遵循单一职责原则
+- 使用 sealed class 表示 UI State
+- 所有网络请求必须使用 suspend 函数
+- 所有数据模型使用 data class
+- 禁止硬编码，所有文字使用 strings.xml 管理
+
 ## 功能需求
 
 ### 1. 登录页面
@@ -93,27 +113,8 @@
 
 4. **页面中所有用到的文字使用统一使用strings.xml管理起来，并要有中英文版本的**
 
-5. **下拉刷新使用Compose的下拉刷新动画**
+5. **下拉刷新使用Compose的下拉刷新动画，在下拉刷新时，不管本地是否有数据都请求网络，下拉刷新动画风格使用使用 PullToRefreshBox composable，它默认就集成了官方的 Material 3 风格动画。**
 
 ---
 
-## 技术架构要求
-
-- **语言：** Kotlin
-- **UI框架：** Jetpack Compose
-- **架构模式：** MVVM
-- **依赖注入：** Hilt
-- **网络请求：** Retrofit + OkHttp
-- **本地数据库：** Room
-- **状态管理：** StateFlow / Flow
-- **协程：** Kotlin Coroutines
-
-## 代码规范
-
-- 所有类必须使用 KDoc 注释
-- 遵循单一职责原则
-- 使用 sealed class 表示 UI State
-- 所有网络请求必须使用 suspend 函数
-- 所有数据模型使用 data class
-- 禁止硬编码，所有文字使用 strings.xml 管理
 
