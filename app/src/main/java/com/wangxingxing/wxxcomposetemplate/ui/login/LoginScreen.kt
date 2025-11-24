@@ -11,7 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wangxingxing.wxxcomposetemplate.R
 import com.wangxingxing.wxxcomposetemplate.base.UiState
@@ -267,6 +269,54 @@ fun UserInfoRow(
             color = if (isImportant) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
         )
+    }
+}
+
+/**
+ * 用户信息卡片预览
+ */
+@Preview(showBackground = true)
+@Composable
+fun UserInfoCardPreview() {
+    WXXComposeTemplateTheme {
+        UserInfoCard(
+            userInfo = UserInfo(
+                id = 12345,
+                username = "testuser",
+                email = "test@example.com",
+                nickname = "测试用户",
+                publicName = "公开名称",
+                token = "test_token_1234567890"
+            )
+        )
+    }
+}
+
+/**
+ * 用户信息行预览
+ */
+@Preview(showBackground = true)
+@Composable
+fun UserInfoRowPreview() {
+    WXXComposeTemplateTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            UserInfoRow(
+                label = "用户ID：",
+                value = "12345"
+            )
+            UserInfoRow(
+                label = "用户名：",
+                value = "testuser"
+            )
+            UserInfoRow(
+                label = "Token：",
+                value = "test_token_1234567890",
+                isImportant = true
+            )
+        }
     }
 }
 

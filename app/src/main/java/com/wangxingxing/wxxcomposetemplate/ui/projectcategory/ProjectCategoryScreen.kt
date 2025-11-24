@@ -16,7 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wangxingxing.wxxcomposetemplate.R
 import com.wangxingxing.wxxcomposetemplate.base.UiState
@@ -270,6 +272,33 @@ fun ProjectCategoryCard(
                 }
             }
         }
+    }
+}
+
+/**
+ * 项目分类卡片预览
+ */
+@Preview(showBackground = true)
+@Composable
+fun ProjectCategoryCardPreview() {
+    WXXComposeTemplateTheme {
+        ProjectCategoryCard(
+            category = ProjectCategoryEntity(
+                id = 294,
+                name = "完整项目",
+                courseId = 13,
+                parentChapterId = 293,
+                order = 145000,
+                visible = 0,
+                type = 0,
+                desc = "这是一个项目分类的示例描述",
+                cover = "",
+                author = "",
+                lisense = "",
+                lisenseLink = "",
+                userControlSetTop = false
+            )
+        )
     }
 }
 

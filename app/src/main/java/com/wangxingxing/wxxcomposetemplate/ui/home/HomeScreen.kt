@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -305,19 +306,97 @@ fun ArticleItem(
     }
 }
 
+/**
+ * Banner 视图预览
+ */
+@Preview(showBackground = true)
+@Composable
+fun BannerViewPreview() {
+    WXXComposeTemplateTheme {
+        BannerView(
+            banners = listOf(
+                Banner(
+                    desc = "Banner 描述",
+                    id = 1,
+                    imagePath = "https://www.wanandroid.com/blogimgs/42da12d8-de56-4439-b40c-eab66c227a4b.png",
+                    isVisible = 1,
+                    order = 1,
+                    title = "Banner 标题 1",
+                    type = 0,
+                    url = "https://www.wanandroid.com"
+                ),
+                Banner(
+                    desc = "Banner 描述 2",
+                    id = 2,
+                    imagePath = "https://www.wanandroid.com/blogimgs/42da12d8-de56-4439-b40c-eab66c227a4b.png",
+                    isVisible = 1,
+                    order = 2,
+                    title = "Banner 标题 2",
+                    type = 0,
+                    url = "https://www.wanandroid.com"
+                )
+            )
+        )
+    }
+}
+
+/**
+ * Banner 项预览
+ */
+@Preview(showBackground = true)
+@Composable
+fun BannerItemPreview() {
+    WXXComposeTemplateTheme {
+        BannerItem(
+            banner = Banner(
+                desc = "Banner 描述",
+                id = 1,
+                imagePath = "https://www.wanandroid.com/blogimgs/42da12d8-de56-4439-b40c-eab66c227a4b.png",
+                isVisible = 1,
+                order = 1,
+                title = "Banner 标题示例",
+                type = 0,
+                url = "https://www.wanandroid.com"
+            ),
+            modifier = Modifier
+                .width(300.dp)
+                .height(200.dp)
+        )
+    }
+}
+
+/**
+ * 文章项预览
+ */
 @Preview(showBackground = true)
 @Composable
 fun ArticleItemPreview() {
-    ArticleItem(
-        article = Article(
-            id = 1,
-            title = "示例文章标题",
-            desc = "这是一段示例描述文本，用于展示文章摘要内容。",
-            author = "王星星",
-            chapterName = "技术分享",
-            niceDate = "2025-01-20"
+    WXXComposeTemplateTheme {
+        ArticleItem(
+            article = Article(
+                id = 1,
+                title = "示例文章标题",
+                desc = "这是一段示例描述文本，用于展示文章摘要内容。",
+                author = "王星星",
+                chapterName = "技术分享",
+                niceDate = "2025-01-20"
+            )
         )
-    )
+    }
+}
+
+/**
+ * 错误项预览
+ */
+@Preview(showBackground = true)
+@Composable
+fun ErrorItemPreview() {
+    WXXComposeTemplateTheme {
+        ErrorItem(
+            message = "网络请求失败，请检查网络连接",
+            onRetry = {}
+        )
+    }
 }
 
 

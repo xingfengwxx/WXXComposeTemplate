@@ -8,7 +8,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import kotlinx.coroutines.launch
 import com.wangxingxing.wxxcomposetemplate.utils.permission.PermissionHelper
 import com.wangxingxing.wxxcomposetemplate.R
@@ -91,6 +93,46 @@ fun PermissionScreen() {
             modifier = Modifier.padding(vertical = 8.dp)
         ) {
             Text(permissionRequestCamera)
+        }
+    }
+}
+
+/**
+ * 权限请求页面预览
+ */
+@Preview(showBackground = true)
+@Composable
+fun PermissionScreenPreview() {
+    WXXComposeTemplateTheme {
+        // 注意：PermissionScreen 需要 Activity 上下文，预览中可能无法完全展示
+        // 这里提供一个简化的预览版本
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = stringResource(R.string.permission_title),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            Text(
+                text = stringResource(R.string.permission_status, stringResource(R.string.permission_not_requested)),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            Button(
+                onClick = { },
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Text(stringResource(R.string.permission_request_storage))
+            }
+            Button(
+                onClick = { },
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Text(stringResource(R.string.permission_request_camera))
+            }
         }
     }
 }

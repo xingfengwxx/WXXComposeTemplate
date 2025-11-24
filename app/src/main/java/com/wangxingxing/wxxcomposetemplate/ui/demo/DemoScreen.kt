@@ -14,12 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.blankj.utilcode.util.LogUtils
 import androidx.compose.ui.res.stringResource
+import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 
 /**
  * author : 王星星
@@ -191,5 +193,26 @@ fun DemoItemCard(
                 )
             }
         }
+    }
+}
+
+/**
+ * 示例项卡片预览
+ */
+@Preview(showBackground = true)
+@Composable
+fun DemoItemCardPreview() {
+    WXXComposeTemplateTheme {
+        DemoItemCard(
+            item = com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem(
+                id = 1,
+                title = "示例标题",
+                content = "这是示例内容描述",
+                imageUrl = "https://picsum.photos/200/200"
+            ),
+            permissionTitle = "权限请求示例",
+            loginTitle = "登录示例",
+            projectCategoryTitle = "Room 数据库示例"
+        )
     }
 }
