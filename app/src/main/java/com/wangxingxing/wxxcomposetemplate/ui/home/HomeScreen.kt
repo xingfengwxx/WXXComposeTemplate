@@ -4,8 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -14,6 +15,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -154,27 +157,92 @@ fun HomeScreen(
 }
 
 /**
- * Banner 视图
+ * Banner 视图（带指示器，支持手动滑动）
  */
 @Composable
 fun BannerView(
     banners: List<Banner>,
     modifier: Modifier = Modifier
 ) {
-    LazyRow(
+    if (banners.isEmpty()) {
+        return
+    }
+
+    val actualPageCount = banners.size
+    val isSinglePage = actualPageCount <= 1
+
+    // Pager 状态
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { actualPageCount }
+    )
+
+    // 当前显示的页面索引（用于指示器）
+    val currentPage = pagerState.currentPage
+
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .height(200.dp)
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
+            .padding(vertical = 8.dp)
     ) {
-        items(banners) { banner ->
+        // Banner 轮播
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            pageSpacing = 8.dp,
+            key = { index -> banners[index].id } // 使用唯一 ID 作为 key，优化重组
+        ) { page ->
+            val banner = banners[page]
             BannerItem(
                 banner = banner,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        // 指示器
+        if (!isSinglePage) {
+            BannerIndicator(
+                pageCount = actualPageCount,
+                currentPage = currentPage,
                 modifier = Modifier
-                    .width(300.dp)
-                    .height(200.dp)
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 16.dp)
+            )
+        }
+    }
+}
+
+/**
+ * Banner 指示器
+ */
+@Composable
+fun BannerIndicator(
+    pageCount: Int,
+    currentPage: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(pageCount) { index ->
+            Box(
+                modifier = Modifier
+                    .size(
+                        width = if (index == currentPage) 24.dp else 8.dp,
+                        height = 8.dp
+                    )
+                    .clip(CircleShape)
+                    .background(
+                        color = if (index == currentPage) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                        }
+                    )
             )
         }
     }
@@ -307,16 +375,16 @@ fun ArticleItem(
 }
 
 /**
- * Banner 视图预览
+ * Banner 视图预览（带指示器，支持手动滑动）
  */
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = 360, heightDp = 200)
 @Composable
 fun BannerViewPreview() {
     WXXComposeTemplateTheme {
         BannerView(
             banners = listOf(
                 Banner(
-                    desc = "Banner 描述",
+                    desc = "Banner 描述 1",
                     id = 1,
                     imagePath = "https://www.wanandroid.com/blogimgs/42da12d8-de56-4439-b40c-eab66c227a4b.png",
                     isVisible = 1,
@@ -334,9 +402,46 @@ fun BannerViewPreview() {
                     title = "Banner 标题 2",
                     type = 0,
                     url = "https://www.wanandroid.com"
+                ),
+                Banner(
+                    desc = "Banner 描述 3",
+                    id = 3,
+                    imagePath = "https://www.wanandroid.com/blogimgs/42da12d8-de56-4439-b40c-eab66c227a4b.png",
+                    isVisible = 1,
+                    order = 3,
+                    title = "Banner 标题 3",
+                    type = 0,
+                    url = "https://www.wanandroid.com"
                 )
             )
         )
+    }
+}
+
+/**
+ * Banner 指示器预览
+ */
+@Preview(showBackground = true)
+@Composable
+fun BannerIndicatorPreview() {
+    WXXComposeTemplateTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            BannerIndicator(
+                pageCount = 3,
+                currentPage = 0
+            )
+            BannerIndicator(
+                pageCount = 3,
+                currentPage = 1
+            )
+            BannerIndicator(
+                pageCount = 3,
+                currentPage = 2
+            )
+        }
     }
 }
 

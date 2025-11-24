@@ -27,7 +27,7 @@
 ## 功能需求
 
 ### 1. 首页
-#### 1.重新构建首页页面，头部为一个BannerView，获取Banner数据接口如下：
+#### 1.重新构建首页页面，头部为一个BannerView，BannerView需要自动循环播放，获取Banner数据接口如下：
 https://www.wanandroid.com/banner/json
 方法：GET
 参数：无
