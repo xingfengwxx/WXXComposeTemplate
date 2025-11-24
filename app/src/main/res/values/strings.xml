@@ -74,4 +74,10 @@
     <string name="project_category_visible_yes">Yes</string>
     <string name="project_category_visible_no">No</string>
     <string name="project_category_type">Type</string>
+    
+    <!-- Article Detail Page -->
+    <string name="article_detail_loading">Loading...</string>
+    <string name="article_detail_error">Error loading article</string>
+    <string name="article_detail_empty_url">Article URL is empty</string>
+    <string name="article_detail_back">Back</string>
 </resources>

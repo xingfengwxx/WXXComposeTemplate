@@ -74,4 +74,10 @@
     <string name="project_category_visible_yes">是</string>
     <string name="project_category_visible_no">否</string>
     <string name="project_category_type">类型</string>
+    
+    <!-- 文章详情页面 -->
+    <string name="article_detail_loading">加载中...</string>
+    <string name="article_detail_error">加载文章失败</string>
+    <string name="article_detail_empty_url">文章链接为空</string>
+    <string name="article_detail_back">返回</string>
 </resources>

@@ -23,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.google.gson.Gson
 import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -33,6 +35,7 @@ import com.wangxingxing.wxxcomposetemplate.R
 import com.wangxingxing.wxxcomposetemplate.base.UiState
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.Article
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.Banner
+import java.net.URLEncoder
 
 /**
  * author : 王星星
@@ -42,6 +45,7 @@ import com.wangxingxing.wxxcomposetemplate.data.remote.api.Banner
  */
 @Composable
 fun HomeScreen(
+    navController: NavController? = null,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val banners by viewModel.banners.collectAsState()
@@ -103,7 +107,17 @@ fun HomeScreen(
             ) { index ->
                 val article = articles[index]
                 if (article != null) {
-                    ArticleItem(article = article)
+                    ArticleItem(
+                        article = article,
+                        onClick = {
+                            // 跳转到文章详情页
+                            navController?.let { nav ->
+                                val articleJson = Gson().toJson(article)
+                                val encodedJson = URLEncoder.encode(articleJson, "UTF-8")
+                                nav.navigate("article_detail/$encodedJson")
+                            }
+                        }
+                    )
                 }
             }
 

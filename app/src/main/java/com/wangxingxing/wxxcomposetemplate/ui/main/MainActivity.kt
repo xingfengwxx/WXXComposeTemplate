@@ -22,6 +22,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.gson.Gson
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.Article
+import com.wangxingxing.wxxcomposetemplate.ui.articledetail.ArticleDetailScreen
 import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import com.wangxingxing.wxxcomposetemplate.ui.home.HomeScreen
 import com.wangxingxing.wxxcomposetemplate.ui.demo.DemoScreen
@@ -29,6 +32,7 @@ import com.wangxingxing.wxxcomposetemplate.ui.login.LoginScreen
 import com.wangxingxing.wxxcomposetemplate.ui.projectcategory.ProjectCategoryScreen
 import dagger.hilt.android.AndroidEntryPoint
 import ui.permission.PermissionScreen
+import java.net.URLEncoder
 
 /**
  * author : 王星星
@@ -65,7 +69,7 @@ fun MainScreen() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("home") {
-                HomeScreen()
+                HomeScreen(navController = navController)
             }
             composable("demo") {
                 DemoScreen(navController = navController)
@@ -83,6 +87,22 @@ fun MainScreen() {
             }
             composable("project_category") {
                 ProjectCategoryScreen()
+            }
+            composable("article_detail/{articleJson}") { backStackEntry ->
+                val articleJson = backStackEntry.arguments?.getString("articleJson") ?: ""
+                val article = try {
+                    Gson().fromJson(articleJson, Article::class.java)
+                } catch (e: Exception) {
+                    null
+                }
+                if (article != null) {
+                    ArticleDetailScreen(
+                        article = article,
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
         }
     }
