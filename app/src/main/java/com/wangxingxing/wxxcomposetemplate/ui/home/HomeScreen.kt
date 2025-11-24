@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -247,7 +248,7 @@ fun ArticleItem(
             // 标题
             Text(
                 text = article.title,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -303,6 +304,22 @@ fun ArticleItem(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun ArticleItemPreview() {
+    ArticleItem(
+        article = Article(
+            id = 1,
+            title = "示例文章标题",
+            desc = "这是一段示例描述文本，用于展示文章摘要内容。",
+            author = "王星星",
+            chapterName = "技术分享",
+            niceDate = "2025-01-20"
+        )
+    )
+}
+
 
 /**
  * 错误项
