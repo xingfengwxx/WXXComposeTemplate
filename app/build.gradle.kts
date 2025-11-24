@@ -95,6 +95,10 @@ dependencies {
     // Startup
     implementation(libs.androidx.startup.runtime)
     
+    // Paging
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+    
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)

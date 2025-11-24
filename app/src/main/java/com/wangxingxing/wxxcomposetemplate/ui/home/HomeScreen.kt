@@ -1,46 +1,332 @@
 package com.wangxingxing.wxxcomposetemplate.ui.home
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.AsyncImage
+import com.wangxingxing.wxxcomposetemplate.R
+import com.wangxingxing.wxxcomposetemplate.base.UiState
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.Article
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.Banner
 
 /**
  * author : 王星星
- * date : 2025/11/20 19:26
+ * date : 2025/01/20
  * email : 1099420259@qq.com
  * description : 首页 Compose 页面
  */
 @Composable
-fun HomeScreen() {
-    var clickCount by remember { mutableStateOf(0) }
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel()
+) {
+    val banners by viewModel.banners.collectAsState()
+    val uiState by viewModel.getUiState().collectAsState()
+    val articles = viewModel.articles.collectAsLazyPagingItems()
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Banner 区域
+        when (val state = uiState) {
+            is UiState.Loading -> {
+                // 加载中，显示占位
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            is UiState.Error -> {
+                // 错误状态，显示错误信息
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .background(MaterialTheme.colorScheme.errorContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = state.message,
+                        color = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                }
+            }
+            else -> {
+                // 显示 Banner
+                if (banners.isNotEmpty()) {
+                    BannerView(
+                        banners = banners,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+        }
+
+        // 文章列表
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(
+                count = articles.itemCount,
+                key = { index -> articles[index]?.id ?: index }
+            ) { index ->
+                val article = articles[index]
+                if (article != null) {
+                    ArticleItem(article = article)
+                }
+            }
+
+            // 加载状态
+            when {
+                articles.loadState.refresh is LoadState.Loading -> {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+                articles.loadState.append is LoadState.Loading -> {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+                articles.loadState.refresh is LoadState.Error -> {
+                    val error = articles.loadState.refresh as LoadState.Error
+                    item {
+                        ErrorItem(
+                            message = error.error.message ?: stringResource(R.string.error_unknown),
+                            onRetry = { articles.retry() }
+                        )
+                    }
+                }
+                articles.loadState.append is LoadState.Error -> {
+                    val error = articles.loadState.append as LoadState.Error
+                    item {
+                        ErrorItem(
+                            message = error.error.message ?: stringResource(R.string.error_unknown),
+                            onRetry = { articles.retry() }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Banner 视图
+ */
+@Composable
+fun BannerView(
+    banners: List<Banner>,
+    modifier: Modifier = Modifier
+) {
+    LazyRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        items(banners) { banner ->
+            BannerItem(
+                banner = banner,
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(200.dp)
+            )
+        }
+    }
+}
+
+/**
+ * Banner 项
+ */
+@Composable
+fun BannerItem(
+    banner: Banner,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
+    Card(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            AsyncImage(
+                model = banner.imagePath,
+                contentDescription = banner.title,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+            // 标题覆盖层
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
+                    )
+                    .padding(12.dp)
+            ) {
+                Text(
+                    text = banner.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
+}
+
+/**
+ * 文章项
+ */
+@Composable
+fun ArticleItem(
+    article: Article,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // 标题
+            Text(
+                text = article.title,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            // 描述
+            if (!article.desc.isNullOrEmpty()) {
+                Text(
+                    text = article.desc,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            // 底部信息
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // 作者和分类
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (!article.author.isNullOrEmpty()) {
+                        Text(
+                            text = article.author,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+                    if (!article.chapterName.isNullOrEmpty()) {
+                        Text(
+                            text = article.chapterName,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+
+                // 时间
+                if (!article.niceDate.isNullOrEmpty()) {
+                    Text(
+                        text = article.niceDate,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * 错误项
+ */
+@Composable
+fun ErrorItem(
+    message: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.home_welcome),
-            modifier = Modifier.padding(bottom = 16.dp)
+            text = message,
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodyMedium
         )
-        
-        Button(
-            onClick = { clickCount++ },
-            modifier = Modifier.padding(vertical = 8.dp)
-        ) {
-            Text(stringResource(com.wangxingxing.wxxcomposetemplate.R.string.home_click_count, clickCount))
+        Button(onClick = onRetry) {
+            Text(stringResource(R.string.home_retry))
         }
-        
-        Text(
-            text = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.home_compose_example),
-            modifier = Modifier.padding(top = 16.dp)
-        )
     }
 }

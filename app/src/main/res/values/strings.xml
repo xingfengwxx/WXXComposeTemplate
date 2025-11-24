@@ -15,6 +15,10 @@
     <string name="home_welcome">Welcome to Android Architecture Template</string>
     <string name="home_click_count">Click Count: %1$d</string>
     <string name="home_compose_example">This is a Compose Example Page</string>
+    <string name="home_retry">Retry</string>
+    <string name="home_article_author">Author</string>
+    <string name="home_article_category">Category</string>
+    <string name="home_article_time">Time</string>
     
     <!-- Permission Request Page -->
     <string name="permission_title">Permission Request Example</string>

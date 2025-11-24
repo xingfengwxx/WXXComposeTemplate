@@ -15,6 +15,10 @@
     <string name="home_welcome">欢迎使用 Android 架构模板</string>
     <string name="home_click_count">点击次数: %1$d</string>
     <string name="home_compose_example">这是 Compose 示例页面</string>
+    <string name="home_retry">重试</string>
+    <string name="home_article_author">作者</string>
+    <string name="home_article_category">分类</string>
+    <string name="home_article_time">时间</string>
     
     <!-- 权限请求页面 -->
     <string name="permission_title">权限请求示例</string>

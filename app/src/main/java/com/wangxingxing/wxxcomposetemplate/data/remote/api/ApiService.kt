@@ -47,6 +47,25 @@ interface WanAndroidApiService {
      */
     @GET("project/tree/json")
     suspend fun getProjectTree(): ProjectCategoryResponse
+    
+    /**
+     * 获取 Banner 列表
+     * @return Banner 响应
+     */
+    @GET("banner/json")
+    suspend fun getBannerList(): BannerResponse
+    
+    /**
+     * 获取文章列表
+     * @param page 页码，从0开始
+     * @param pageSize 每页数量，取值范围[1-40]，不传则使用默认值
+     * @return 文章列表响应
+     */
+    @GET("article/list/{page}/json")
+    suspend fun getArticleList(
+        @Path("page") page: Int,
+        @Query("page_size") pageSize: Int? = null
+    ): ArticleResponse
 }
 
 /**

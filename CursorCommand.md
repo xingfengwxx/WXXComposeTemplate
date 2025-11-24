@@ -26,7 +26,92 @@
 
 ## 功能需求
 
-### 1. 登录页面
+### 1. 首页
+#### 1.重新构建首页页面，头部为一个BannerView，获取Banner数据接口如下：
+https://www.wanandroid.com/banner/json
+方法：GET
+参数：无
+返回数据示例如下：
+```json
+{
+  "data": [
+    {
+      "desc": "我们支持订阅啦~",
+      "id": 30,
+      "imagePath": "https://www.wanandroid.com/blogimgs/42da12d8-de56-4439-b40c-eab66c227a4b.png",
+      "isVisible": 1,
+      "order": 2,
+      "title": "我们支持订阅啦~",
+      "type": 0,
+      "url": "https://www.wanandroid.com/blog/show/3352"
+    }
+  ],
+  "errorCode": 0,
+  "errorMsg": ""
+}
+```
+#### 2.Banner下面是一个文章列表，使用Pageing3进行分页加载，获取文章列表接口如下：
+https://www.wanandroid.com/article/list/0/json
+方法：GET
+参数：页码，拼接在连接中，从0开始。
+注：该接口支持传入 page_size 控制分页数量，取值为[1-40]，不传则使用默认值，一旦传入了 page_size，后续该接口分页都需要带上，否则会造成分页读取错误。
+接口返回数据格式示例如下：
+```json
+{
+  "data": {
+    "curPage": 2,
+    "datas": [
+      {
+        "adminAdd": false,
+        "apkLink": "",
+        "audit": 1,
+        "author": "",
+        "canEdit": false,
+        "chapterId": 502,
+        "chapterName": "自助",
+        "collect": false,
+        "courseId": 13,
+        "desc": "",
+        "descMd": "",
+        "envelopePic": "",
+        "fresh": false,
+        "host": "",
+        "id": 30927,
+        "isAdminAdd": false,
+        "link": "https://juejin.cn/post/7565798770320982031",
+        "niceDate": "2025-11-02 15:00",
+        "niceShareDate": "2025-11-02 15:00",
+        "origin": "",
+        "prefix": "",
+        "projectLink": "",
+        "publishTime": 1762066831000,
+        "realSuperChapterId": 493,
+        "selfVisible": 0,
+        "shareDate": 1762066817000,
+        "shareUser": "鸿洋",
+        "superChapterId": 494,
+        "superChapterName": "广场Tab",
+        "tags": [],
+        "title": "KMP实战：从单端到跨平台的完整迁移指南",
+        "type": 0,
+        "userId": 2,
+        "visible": 1,
+        "zan": 0
+      }
+    ],
+    "offset": 20,
+    "over": false,
+    "pageCount": 816,
+    "size": 20,
+    "total": 16314
+  },
+  "errorCode": 0,
+  "errorMsg": ""
+}
+```
+
+
+### 2. 登录页面
 
 创建一个登录页面，从标题2的位置点击进入，点击登录调用接口完成网络请求，登录接口如下：
 
@@ -68,7 +153,7 @@
 
 ---
 
-### 2. Room 数据库使用示例页面
+### 3. Room 数据库使用示例页面
 
 创建一个room数据库的使用示例页面，添加到标题3的位置，页面中的功能如下：
 
