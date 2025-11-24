@@ -37,6 +37,7 @@ fun DemoScreen(
     // 获取字符串资源
     val permissionTitle = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.demo_permission_title)
     val loginTitle = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.login_title_demo)
+    val projectCategoryTitle = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.project_category_title_demo)
 
     Column(
         modifier = Modifier
@@ -86,6 +87,7 @@ fun DemoScreen(
                             item = item,
                             permissionTitle = permissionTitle,
                             loginTitle = loginTitle,
+                            projectCategoryTitle = projectCategoryTitle,
                             onClick = {
                                 // 点击权限请求示例时跳转到权限示例页面
                                 if (item.title == permissionTitle) {
@@ -94,6 +96,10 @@ fun DemoScreen(
                                 // 点击登录示例时跳转到登录页面
                                 else if (item.title == loginTitle) {
                                     navController.navigate("login")
+                                }
+                                // 点击 Room 数据库示例时跳转到项目分类页面
+                                else if (item.title == projectCategoryTitle) {
+                                    navController.navigate("project_category")
                                 }
                             }
                         )
@@ -109,13 +115,14 @@ fun DemoItemCard(
     item: com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem,
     permissionTitle: String,
     loginTitle: String,
+    projectCategoryTitle: String,
     onClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (item.title == permissionTitle || item.title == loginTitle) {
+                if (item.title == permissionTitle || item.title == loginTitle || item.title == projectCategoryTitle) {
                     Modifier.clickable { onClick() }
                 } else {
                     Modifier

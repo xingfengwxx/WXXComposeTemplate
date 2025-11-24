@@ -1,0 +1,65 @@
+package com.wangxingxing.wxxcomposetemplate.data.remote.api
+
+import com.google.gson.annotations.SerializedName
+
+/**
+ * author : 王星星
+ * date : 2025/01/20
+ * email : 1099420259@qq.com
+ * description : 项目分类响应数据模型（wanandroid API 格式）
+ */
+data class ProjectCategoryResponse(
+    @SerializedName("errorCode")
+    val errorCode: Int,
+    @SerializedName("errorMsg")
+    val errorMsg: String,
+    @SerializedName("data")
+    val data: List<ProjectCategory>?
+) {
+    fun isSuccess(): Boolean = errorCode == 0
+
+    fun toApiResult(): ApiResult<List<ProjectCategory>> {
+        return if (isSuccess() && data != null) {
+            ApiResult.Success(data)
+        } else {
+            ApiResult.Error(errorCode, errorMsg)
+        }
+    }
+}
+
+/**
+ * 项目分类数据模型
+ */
+data class ProjectCategory(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("courseId")
+    val courseId: Int,
+    @SerializedName("parentChapterId")
+    val parentChapterId: Int,
+    @SerializedName("order")
+    val order: Int,
+    @SerializedName("visible")
+    val visible: Int,
+    @SerializedName("type")
+    val type: Int,
+    @SerializedName("desc")
+    val desc: String? = null,
+    @SerializedName("cover")
+    val cover: String? = null,
+    @SerializedName("author")
+    val author: String? = null,
+    @SerializedName("lisense")
+    val lisense: String? = null,
+    @SerializedName("lisenseLink")
+    val lisenseLink: String? = null,
+    @SerializedName("userControlSetTop")
+    val userControlSetTop: Boolean = false,
+    @SerializedName("articleList")
+    val articleList: List<Any>? = null,
+    @SerializedName("children")
+    val children: List<Any>? = null
+)
+

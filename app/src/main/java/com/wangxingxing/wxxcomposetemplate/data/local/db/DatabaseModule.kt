@@ -2,6 +2,8 @@ package com.wangxingxing.wxxcomposetemplate.data.local.db
 
 import android.content.Context
 import androidx.room.Room
+import com.wangxingxing.wxxcomposetemplate.data.local.db.dao.DemoDao
+import com.wangxingxing.wxxcomposetemplate.data.local.db.dao.ProjectCategoryDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,5 +29,17 @@ object DatabaseModule {
             AppDatabase::class.java,
             "app_database"
         ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDemoDao(database: AppDatabase): DemoDao {
+        return database.demoDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideProjectCategoryDao(database: AppDatabase): ProjectCategoryDao {
+        return database.projectCategoryDao()
     }
 }
