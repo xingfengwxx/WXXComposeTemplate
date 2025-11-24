@@ -4,6 +4,7 @@
     <!-- Navigation Bar -->
     <string name="nav_home">Home</string>
     <string name="nav_demo">Demo</string>
+    <string name="nav_settings">Settings</string>
     
     <!-- Demo List Page -->
     <string name="demo_list_title">Demo List</string>
@@ -80,4 +81,9 @@
     <string name="article_detail_error">Error loading article</string>
     <string name="article_detail_empty_url">Article URL is empty</string>
     <string name="article_detail_back">Back</string>
+    
+    <!-- Settings Page -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_back">Back</string>
+    <string name="settings_theme_color">Theme Color</string>
 </resources>

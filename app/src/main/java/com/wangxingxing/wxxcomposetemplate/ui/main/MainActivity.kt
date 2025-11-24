@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -30,8 +31,14 @@ import com.wangxingxing.wxxcomposetemplate.ui.home.HomeScreen
 import com.wangxingxing.wxxcomposetemplate.ui.demo.DemoScreen
 import com.wangxingxing.wxxcomposetemplate.ui.login.LoginScreen
 import com.wangxingxing.wxxcomposetemplate.ui.projectcategory.ProjectCategoryScreen
+import com.wangxingxing.wxxcomposetemplate.ui.settings.SettingsScreen
+import com.wangxingxing.wxxcomposetemplate.ui.settings.SettingsViewModel
+import com.wangxingxing.wxxcomposetemplate.ui.settings.ThemeColorScreen
 import dagger.hilt.android.AndroidEntryPoint
 import ui.permission.PermissionScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import java.net.URLEncoder
 
 /**
@@ -46,10 +53,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            WXXComposeTemplateTheme {
-                MainScreen()
-            }
+            MainScreenWithTheme()
         }
+    }
+}
+
+@Composable
+fun MainScreenWithTheme() {
+    val settingsViewModel: SettingsViewModel = hiltViewModel()
+    val themeColorIndex by settingsViewModel.themeColorIndex.collectAsState()
+    
+    WXXComposeTemplateTheme(themeColorIndex = themeColorIndex) {
+        MainScreen()
     }
 }
 
@@ -104,6 +119,12 @@ fun MainScreen() {
                     )
                 }
             }
+            composable("settings") {
+                SettingsScreen(navController = navController)
+            }
+            composable("theme_color") {
+                ThemeColorScreen(navController = navController)
+            }
         }
     }
 }
@@ -135,6 +156,17 @@ fun BottomNavigationBar(navController: NavController) {
                 )
             },
             label = { Text(stringResource(com.wangxingxing.wxxcomposetemplate.R.string.nav_demo)) }
+        )
+        NavigationBarItem(
+            selected = currentRoute == "settings",
+            onClick = { navController.navigate("settings") },
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.nav_settings)
+                )
+            },
+            label = { Text(stringResource(com.wangxingxing.wxxcomposetemplate.R.string.nav_settings)) }
         )
     }
 }

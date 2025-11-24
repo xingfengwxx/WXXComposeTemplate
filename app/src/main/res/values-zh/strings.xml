@@ -4,6 +4,7 @@
     <!-- 导航栏 -->
     <string name="nav_home">首页</string>
     <string name="nav_demo">示例</string>
+    <string name="nav_settings">设置</string>
     
     <!-- 示例列表页面 -->
     <string name="demo_list_title">示例列表</string>
@@ -80,4 +81,9 @@
     <string name="article_detail_error">加载文章失败</string>
     <string name="article_detail_empty_url">文章链接为空</string>
     <string name="article_detail_back">返回</string>
+    
+    <!-- 设置页面 -->
+    <string name="settings_title">设置</string>
+    <string name="settings_back">返回</string>
+    <string name="settings_theme_color">主题色</string>
 </resources>
