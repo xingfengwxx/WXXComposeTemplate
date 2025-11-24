@@ -4,6 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,6 +28,7 @@ import com.wangxingxing.wxxcomposetemplate.data.local.db.entity.ProjectCategoryE
  * email : 1099420259@qq.com
  * description : 项目分类页面
  */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProjectCategoryScreen(
     viewModel: ProjectCategoryViewModel = hiltViewModel()
@@ -31,70 +36,106 @@ fun ProjectCategoryScreen(
     val categories by viewModel.categories.collectAsState()
     val uiState by viewModel.getUiState().collectAsState()
 
+    // 判断是否正在刷新（Loading 状态且不是首次加载）
+    val isRefreshing = uiState is UiState.Loading && categories.isNotEmpty()
+
+    // 下拉刷新状态
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.refresh() }
+    )
+
     // 获取字符串资源
     val title = stringResource(R.string.project_category_title)
-    val refreshButton = stringResource(R.string.project_category_refresh)
     val emptyData = stringResource(R.string.project_category_empty)
     val loadingText = stringResource(R.string.project_category_loading)
-    val categoryName = stringResource(R.string.project_category_name)
-    val categoryId = stringResource(R.string.project_category_id)
-    val categoryOrder = stringResource(R.string.project_category_order)
-    val categoryVisible = stringResource(R.string.project_category_visible)
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .pullRefresh(pullRefreshState)
     ) {
-        // 标题和刷新按钮
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
+            // 标题
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
-            Button(onClick = { viewModel.refresh() }) {
-                Text(refreshButton)
-            }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 加载状态
-        when (val state = uiState) {
-            is UiState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        CircularProgressIndicator()
-                        Text(loadingText)
+            // 加载状态（首次加载时显示）
+            when (val state = uiState) {
+                is UiState.Loading -> {
+                    if (categories.isEmpty()) {
+                        // 首次加载，显示加载指示器
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                CircularProgressIndicator()
+                                Text(loadingText)
+                            }
+                        }
+                    } else {
+                        // 刷新中，显示列表
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(categories) { category ->
+                                ProjectCategoryCard(category = category)
+                            }
+                        }
                     }
                 }
-            }
-            is UiState.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = state.message,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                is UiState.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = state.message,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
                 }
-            }
-            is UiState.Success<*> -> {
-                if (categories.isEmpty()) {
-                    // 空数据提示
+                is UiState.Success<*> -> {
+                    if (categories.isEmpty()) {
+                        // 空数据提示
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = emptyData,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                        }
+                    } else {
+                        // 列表内容（支持下拉刷新）
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(categories) { category ->
+                                ProjectCategoryCard(category = category)
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    // Idle 状态，显示空数据
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -105,31 +146,18 @@ fun ProjectCategoryScreen(
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
                     }
-                } else {
-                    // 列表内容
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(categories) { category ->
-                            ProjectCategoryCard(category = category)
-                        }
-                    }
-                }
-            }
-            else -> {
-                // Idle 状态，显示空数据
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = emptyData,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    )
                 }
             }
         }
+
+        // 下拉刷新指示器（显示在顶部中央）
+        PullRefreshIndicator(
+            refreshing = isRefreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter),
+            backgroundColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.primary
+        )
     }
 }
 
