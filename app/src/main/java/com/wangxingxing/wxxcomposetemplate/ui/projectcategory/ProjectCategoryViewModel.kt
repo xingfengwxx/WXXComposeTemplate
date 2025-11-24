@@ -7,6 +7,8 @@ import com.wangxingxing.wxxcomposetemplate.base.UiState
 import com.wangxingxing.wxxcomposetemplate.data.local.db.entity.ProjectCategoryEntity
 import com.wangxingxing.wxxcomposetemplate.data.repository.ProjectCategoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -91,12 +93,34 @@ class ProjectCategoryViewModel @Inject constructor(
 
     /**
      * 刷新数据（强制从网络获取）
+     * 
+     * 下拉刷新时，不管本地是否有数据都请求网络
+     * 此方法会先清空本地数据，然后从网络获取最新数据并保存到本地
+     * 
+     * 添加了最小显示时间（500ms），防止接口返回太快导致加载动画一闪而过
      */
     fun refresh() {
         viewModelScope.launch {
             updateUiState(UiState.Loading)
+            
+            // 最小显示时间：500毫秒，防止动画一闪而过
+            val minDisplayTime = 500L
+            
             try {
-                val result = repository.refreshProjectCategories()
+                // 并行执行网络请求和最小时间延迟
+                val networkRequest = async {
+                    // 不管本地是否有数据，都从网络获取最新数据
+                    repository.refreshProjectCategories()
+                }
+                
+                val minTimeDelay = async {
+                    delay(minDisplayTime)
+                }
+                
+                // 等待网络请求和最小时间都完成
+                val result = networkRequest.await()
+                minTimeDelay.await()
+                
                 when (result) {
                     is com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult.Success -> {
                         categories.value = result.data
@@ -112,6 +136,8 @@ class ProjectCategoryViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
+                // 即使出错，也确保最小显示时间
+                delay(minDisplayTime)
                 handleError(e)
             }
         }

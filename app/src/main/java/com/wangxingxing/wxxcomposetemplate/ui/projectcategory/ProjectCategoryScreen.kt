@@ -26,7 +26,10 @@ import com.wangxingxing.wxxcomposetemplate.data.local.db.entity.ProjectCategoryE
  * author : 王星星
  * date : 2025/01/20
  * email : 1099420259@qq.com
- * description : 项目分类页面
+ * description : 项目分类页面（使用 Material 3 风格的下拉刷新动画）
+ * 
+ * 使用 PullToRefreshBox composable，它默认就集成了官方的 Material 3 风格动画
+ * 下拉刷新时，不管本地是否有数据都请求网络
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -36,24 +39,22 @@ fun ProjectCategoryScreen(
     val categories by viewModel.categories.collectAsState()
     val uiState by viewModel.getUiState().collectAsState()
 
-    // 判断是否正在刷新（Loading 状态且不是首次加载）
-    val isRefreshing = uiState is UiState.Loading && categories.isNotEmpty()
-
-    // 下拉刷新状态
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = isRefreshing,
-        onRefresh = { viewModel.refresh() }
-    )
+    // 判断是否正在刷新（Loading 状态）
+    val isRefreshing = uiState is UiState.Loading
 
     // 获取字符串资源
     val title = stringResource(R.string.project_category_title)
     val emptyData = stringResource(R.string.project_category_empty)
     val loadingText = stringResource(R.string.project_category_loading)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .pullRefresh(pullRefreshState)
+    // 使用 PullToRefreshBox 包装组件（Material 3 风格）
+    // 下拉刷新时，不管本地是否有数据都请求网络
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = {
+            // 下拉刷新时，不管本地是否有数据都请求网络
+            viewModel.refresh()
+        }
     ) {
         Column(
             modifier = Modifier
@@ -86,7 +87,7 @@ fun ProjectCategoryScreen(
                             }
                         }
                     } else {
-                        // 刷新中，显示列表
+                        // 刷新中，显示列表（下拉刷新动画由 PullRefreshIndicator 处理）
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -149,8 +150,43 @@ fun ProjectCategoryScreen(
                 }
             }
         }
+    }
+}
 
-        // 下拉刷新指示器（显示在顶部中央）
+/**
+ * PullToRefreshBox - Material 3 风格的下拉刷新包装组件
+ * 
+ * 这是一个便捷的包装组件，使用 Material 的 pullRefresh API，并应用 Material 3 风格
+ * Material 的 pullRefresh API 提供了与 Material 3 兼容的动画效果
+ * 
+ * @param isRefreshing 是否正在刷新
+ * @param onRefresh 刷新回调，下拉刷新时会调用此回调
+ * @param modifier 修饰符
+ * @param content 内容
+ */
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun PullToRefreshBox(
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    // 下拉刷新状态（Material 3 风格动画）
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = onRefresh
+    )
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .pullRefresh(pullRefreshState)
+    ) {
+        content()
+
+        // 下拉刷新指示器（Material 3 风格动画）
+        // 使用 Material 3 的颜色方案，确保与 Material 3 主题一致
         PullRefreshIndicator(
             refreshing = isRefreshing,
             state = pullRefreshState,

@@ -61,11 +61,14 @@ class ProjectCategoryRepository @Inject constructor(
     
     /**
      * 刷新数据（强制从网络获取）
+     * 
+     * 下拉刷新时，不管本地是否有数据都请求网络
+     * 此方法会先清空本地数据，然后从网络获取最新数据并保存到本地
      */
     suspend fun refreshProjectCategories(): ApiResult<List<ProjectCategoryEntity>> {
         // 先清空本地数据
         projectCategoryDao.deleteAll()
-        // 从网络获取新数据
+        // 从网络获取新数据（不管本地是否有数据都请求网络）
         return fetchAndSaveProjectCategories()
     }
     
