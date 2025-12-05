@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.wangxingxing.wxxcomposetemplate.base.BaseViewModel
 import com.wangxingxing.wxxcomposetemplate.base.UiState
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.DemoItem
 import com.wangxingxing.wxxcomposetemplate.data.repository.DemoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -15,8 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,13 +26,12 @@ import com.google.gson.Gson
 import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.wangxingxing.wxxcomposetemplate.R
 import com.wangxingxing.wxxcomposetemplate.base.UiState
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.Article
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.Banner
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.Article
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.Banner
 import java.net.URLEncoder
 
 /**

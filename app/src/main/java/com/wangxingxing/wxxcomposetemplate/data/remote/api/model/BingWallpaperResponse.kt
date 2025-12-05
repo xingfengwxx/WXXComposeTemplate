@@ -1,4 +1,4 @@
-package com.wangxingxing.wxxcomposetemplate.data.remote.api
+package com.wangxingxing.wxxcomposetemplate.data.remote.api.model
 
 import com.google.gson.annotations.SerializedName
 

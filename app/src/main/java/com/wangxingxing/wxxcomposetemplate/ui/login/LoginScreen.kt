@@ -18,7 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wangxingxing.wxxcomposetemplate.R
 import com.wangxingxing.wxxcomposetemplate.base.UiState
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.UserInfo
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.UserInfo
 
 /**
  * author : 王星星

@@ -6,7 +6,7 @@ import com.wangxingxing.wxxcomposetemplate.base.BaseViewModel
 import com.wangxingxing.wxxcomposetemplate.base.UiState
 import com.wangxingxing.wxxcomposetemplate.data.local.UserPreferences
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.UserInfo
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.UserInfo
 import com.wangxingxing.wxxcomposetemplate.data.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

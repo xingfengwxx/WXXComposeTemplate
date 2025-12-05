@@ -24,7 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.gson.Gson
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.Article
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.Article
 import com.wangxingxing.wxxcomposetemplate.ui.articledetail.ArticleDetailScreen
 import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import com.wangxingxing.wxxcomposetemplate.ui.home.HomeScreen
@@ -39,7 +39,6 @@ import ui.permission.PermissionScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import java.net.URLEncoder
 
 /**
  * author : 王星星

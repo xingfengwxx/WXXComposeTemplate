@@ -2,10 +2,9 @@ package com.wangxingxing.wxxcomposetemplate.data.repository
 
 import android.content.Context
 import com.blankj.utilcode.util.LogUtils
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiService
+import com.wangxingxing.wxxcomposetemplate.R
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.BingWallpaperService
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.DemoItem
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,21 +17,9 @@ import javax.inject.Singleton
  */
 @Singleton
 class DemoRepository @Inject constructor(
-    private val apiService: ApiService,
     private val bingWallpaperService: BingWallpaperService,
     @ApplicationContext private val context: Context
 ) {
-    /**
-     * 获取列表数据
-     */
-    suspend fun getListData(page: Int = 1, size: Int = 20): ApiResult<List<DemoItem>> {
-        return try {
-            val response = apiService.getListData(page, size)
-            response.toApiResult()
-        } catch (e: Exception) {
-            ApiResult.Error(-1, e.message ?: context.getString(com.wangxingxing.wxxcomposetemplate.R.string.error_network_request_failed))
-        }
-    }
 
     /**
      * 获取必应壁纸图片 URL
@@ -108,8 +95,8 @@ class DemoRepository @Inject constructor(
         list.add(
             DemoItem(
                 id = 1,
-                title = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.demo_permission_title),
-                content = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.demo_permission_content),
+                title = context.getString(R.string.demo_permission_title),
+                content = context.getString(R.string.demo_permission_content),
                 imageUrl = getImageUrl(1)
             )
         )
@@ -117,8 +104,8 @@ class DemoRepository @Inject constructor(
         list.add(
             DemoItem(
                 id = 2,
-                title = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.login_title_demo),
-                content = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.login_content_demo),
+                title = context.getString(R.string.login_title_demo),
+                content = context.getString(R.string.login_content_demo),
                 imageUrl = getImageUrl(2)
             )
         )
@@ -126,8 +113,8 @@ class DemoRepository @Inject constructor(
         list.add(
             DemoItem(
                 id = 3,
-                title = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.project_category_title_demo),
-                content = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.project_category_content_demo),
+                title = context.getString(R.string.project_category_title_demo),
+                content = context.getString(R.string.project_category_content_demo),
                 imageUrl = getImageUrl(3)
             )
         )
@@ -139,8 +126,8 @@ class DemoRepository @Inject constructor(
             list.add(
                 DemoItem(
                     id = index,
-                    title = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.demo_item_title, index),
-                    content = context.getString(com.wangxingxing.wxxcomposetemplate.R.string.demo_item_content, index),
+                    title = context.getString(R.string.demo_item_title, index),
+                    content = context.getString(R.string.demo_item_content, index),
                     imageUrl = getImageUrl(index)
                 )
             )

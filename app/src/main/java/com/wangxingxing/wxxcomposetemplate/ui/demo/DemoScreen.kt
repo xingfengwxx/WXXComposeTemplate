@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.blankj.utilcode.util.LogUtils
 import androidx.compose.ui.res.stringResource
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.DemoItem
 import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 
 /**
@@ -114,7 +115,7 @@ fun DemoScreen(
 
 @Composable
 fun DemoItemCard(
-    item: com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem,
+    item: DemoItem,
     permissionTitle: String,
     loginTitle: String,
     projectCategoryTitle: String,
@@ -204,7 +205,7 @@ fun DemoItemCard(
 fun DemoItemCardPreview() {
     WXXComposeTemplateTheme {
         DemoItemCard(
-            item = com.wangxingxing.wxxcomposetemplate.data.remote.api.DemoItem(
+            item = DemoItem(
                 id = 1,
                 title = "示例标题",
                 content = "这是示例内容描述",

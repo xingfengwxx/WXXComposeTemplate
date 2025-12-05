@@ -4,11 +4,10 @@ import android.content.Context
 import com.wangxingxing.wxxcomposetemplate.data.local.db.dao.ProjectCategoryDao
 import com.wangxingxing.wxxcomposetemplate.data.local.db.entity.ProjectCategoryEntity
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.ProjectCategory
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.ProjectCategory
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.WanAndroidApiService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,7 +51,7 @@ class ProjectCategoryRepository @Inject constructor(
                 projectCategoryDao.insertAll(entities)
                 ApiResult.Success(entities)
             } else {
-                ApiResult.Error(response.errorCode, response.errorMsg)
+                ApiResult.Error(response.code, response.message)
             }
         } catch (e: Exception) {
             ApiResult.Error(-1, e.message ?: context.getString(com.wangxingxing.wxxcomposetemplate.R.string.error_network_request_failed))

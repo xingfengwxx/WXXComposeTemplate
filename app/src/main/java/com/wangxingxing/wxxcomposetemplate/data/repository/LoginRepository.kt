@@ -1,7 +1,7 @@
 package com.wangxingxing.wxxcomposetemplate.data.repository
 
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.UserInfo
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.UserInfo
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.WanAndroidApiService
 import javax.inject.Inject
 import javax.inject.Singleton

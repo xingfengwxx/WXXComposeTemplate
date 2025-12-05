@@ -1,5 +1,6 @@
 package com.wangxingxing.wxxcomposetemplate.data.remote.api
 
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.BingWallpaperResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

@@ -8,7 +8,7 @@ import androidx.paging.cachedIn
 import com.wangxingxing.wxxcomposetemplate.base.BaseViewModel
 import com.wangxingxing.wxxcomposetemplate.base.UiState
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.Banner
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.Banner
 import com.wangxingxing.wxxcomposetemplate.data.repository.ArticlePagingSourceFactory
 import com.wangxingxing.wxxcomposetemplate.data.repository.BannerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

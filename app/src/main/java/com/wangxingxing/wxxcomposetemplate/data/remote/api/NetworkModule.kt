@@ -25,6 +25,7 @@ object NetworkModule {
 
     private const val BASE_URL = "https://api.example.com/"
     private const val WAN_ANDROID_BASE_URL = "https://www.wanandroid.com/"
+    private const val BING_WALLPAPER_BASE_URL = "https://cn.bing.com/"
 
     @Provides
     @Singleton
@@ -96,7 +97,7 @@ object NetworkModule {
         gson: Gson
     ): BingWallpaperService {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://cn.bing.com/")
+            .baseUrl(BING_WALLPAPER_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()

@@ -1,23 +1,6 @@
-package com.wangxingxing.wxxcomposetemplate.data.remote.api
+package com.wangxingxing.wxxcomposetemplate.data.remote.api.model
 
 import com.google.gson.annotations.SerializedName
-
-/**
- * author : 王星星
- * date : 2025/01/20
- * email : 1099420259@qq.com
- * description : 文章列表响应数据模型（wanandroid API 格式）
- */
-data class ArticleResponse(
-    @SerializedName("errorCode")
-    val errorCode: Int,
-    @SerializedName("errorMsg")
-    val errorMsg: String,
-    @SerializedName("data")
-    val data: ArticlePageData?
-) {
-    fun isSuccess(): Boolean = errorCode == 0
-}
 
 /**
  * 文章分页数据
@@ -124,4 +107,3 @@ data class ArticleTag(
     @SerializedName("url")
     val url: String? = null
 )
-

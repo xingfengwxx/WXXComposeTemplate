@@ -3,10 +3,8 @@ package com.wangxingxing.wxxcomposetemplate.data.repository
 import android.content.Context
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.Article
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.Article
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.WanAndroidApiService
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
 /**
  * author : 王星星
@@ -47,7 +45,7 @@ class ArticlePagingSource(
                 )
             } else {
                 LoadResult.Error(
-                    Exception(response.errorMsg.ifEmpty { 
+                    Exception(response.message.ifEmpty { 
                         context.getString(com.wangxingxing.wxxcomposetemplate.R.string.error_network_request_failed)
                     })
                 )

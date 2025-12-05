@@ -1,5 +1,7 @@
 package com.wangxingxing.wxxcomposetemplate.data.remote.api
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * author : 王星星
  * date : 2025/11/20 19:26
@@ -16,11 +18,16 @@ sealed class ApiResult<out T> {
  * API 响应基础数据类
  */
 data class BaseResponse<T>(
+    @SerializedName("errorCode")
     val code: Int,
+
+    @SerializedName("errorMsg")
     val message: String,
+
+    @SerializedName("data")
     val data: T?
 ) {
-    fun isSuccess(): Boolean = code == 200
+    fun isSuccess(): Boolean = code == 0
 
     fun toApiResult(): ApiResult<T> {
         return if (isSuccess() && data != null) {

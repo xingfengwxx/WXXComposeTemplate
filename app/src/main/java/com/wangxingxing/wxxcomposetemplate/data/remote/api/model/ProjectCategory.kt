@@ -1,31 +1,6 @@
-package com.wangxingxing.wxxcomposetemplate.data.remote.api
+package com.wangxingxing.wxxcomposetemplate.data.remote.api.model
 
 import com.google.gson.annotations.SerializedName
-
-/**
- * author : 王星星
- * date : 2025/01/20
- * email : 1099420259@qq.com
- * description : 项目分类响应数据模型（wanandroid API 格式）
- */
-data class ProjectCategoryResponse(
-    @SerializedName("errorCode")
-    val errorCode: Int,
-    @SerializedName("errorMsg")
-    val errorMsg: String,
-    @SerializedName("data")
-    val data: List<ProjectCategory>?
-) {
-    fun isSuccess(): Boolean = errorCode == 0
-
-    fun toApiResult(): ApiResult<List<ProjectCategory>> {
-        return if (isSuccess() && data != null) {
-            ApiResult.Success(data)
-        } else {
-            ApiResult.Error(errorCode, errorMsg)
-        }
-    }
-}
 
 /**
  * 项目分类数据模型
@@ -62,4 +37,3 @@ data class ProjectCategory(
     @SerializedName("children")
     val children: List<Any>? = null
 )
-

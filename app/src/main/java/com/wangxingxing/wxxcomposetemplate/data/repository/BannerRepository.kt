@@ -2,7 +2,7 @@ package com.wangxingxing.wxxcomposetemplate.data.repository
 
 import android.content.Context
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.Banner
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.Banner
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.WanAndroidApiService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
