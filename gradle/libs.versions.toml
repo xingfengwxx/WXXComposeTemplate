@@ -55,6 +55,9 @@ toaster = "13.8"
 # Utils
 utilcodex = "1.31.1"
 
+# Chucker
+chucker = "4.2.0"
+
 [libraries]
 # AndroidX Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -140,6 +143,10 @@ toaster = { group = "com.github.getActivity", name = "Toaster", version.ref = "t
 
 # Utils
 utilcodex = { group = "com.blankj", name = "utilcodex", version.ref = "utilcodex"}
+
+# Chucker
+chucker-debug = { group = "com.github.chuckerteam.chucker", name = "library", version.ref = "chucker" }
+chucker-release = { group = "com.github.chuckerteam.chucker", name = "library-no-op", version.ref = "chucker" }
 
 # Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }
