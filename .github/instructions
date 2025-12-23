@@ -1,0 +1,23 @@
+这是一个 Android Jetpack Compose 项目。
+
+【项目约束】
+- 编程语言：Kotlin
+- UI：Jetpack Compose（Material 3）
+- 架构：MVVM
+- 并发：Coroutines + StateFlow
+- 依赖注入：Hilt
+
+【架构规则】
+- UI → ViewModel → UseCase → Repository
+- UI 层不得直接访问 Repository
+- ViewModel 不持有 Context
+
+【Compose 规则】
+- 所有 UI 状态来自 ViewModel 的 StateFlow
+- 使用 collectAsStateWithLifecycle
+- 禁止在 Composable 中发起网络请求
+- 禁止 rememberCoroutineScope 处理业务逻辑
+
+【错误处理】
+- 不在 UI 层 try-catch
+- 错误通过 UIState.error 返回
