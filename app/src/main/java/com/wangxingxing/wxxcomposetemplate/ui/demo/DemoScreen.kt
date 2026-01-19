@@ -41,6 +41,7 @@ fun DemoScreen(
     val permissionTitle = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.demo_permission_title)
     val loginTitle = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.login_title_demo)
     val projectCategoryTitle = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.project_category_title_demo)
+    val localUserTitle = stringResource(com.wangxingxing.wxxcomposetemplate.R.string.local_user_demo_title)
 
     Column(
         modifier = Modifier
@@ -104,6 +105,10 @@ fun DemoScreen(
                                 else if (item.title == projectCategoryTitle) {
                                     navController.navigate("project_category")
                                 }
+                                // 点击本地网络请求示例跳转
+                                else if (item.title == localUserTitle) {
+                                    navController.navigate("local_user")
+                                }
                             }
                         )
                     }
@@ -125,7 +130,7 @@ fun DemoItemCard(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (item.title == permissionTitle || item.title == loginTitle || item.title == projectCategoryTitle) {
+                if (item.title == permissionTitle || item.title == loginTitle || item.title == projectCategoryTitle || item.title == stringResource(com.wangxingxing.wxxcomposetemplate.R.string.local_user_demo_title)) {
                     Modifier.clickable { onClick() }
                 } else {
                     Modifier

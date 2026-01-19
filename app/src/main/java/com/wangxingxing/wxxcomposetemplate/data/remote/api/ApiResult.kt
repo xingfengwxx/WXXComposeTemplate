@@ -18,10 +18,10 @@ sealed class ApiResult<out T> {
  * API 响应基础数据类
  */
 data class BaseResponse<T>(
-    @SerializedName("errorCode")
+    @SerializedName("errorCode", alternate = ["code"])
     val code: Int,
 
-    @SerializedName("errorMsg")
+    @SerializedName("errorMsg", alternate = ["message"])
     val message: String,
 
     @SerializedName("data")

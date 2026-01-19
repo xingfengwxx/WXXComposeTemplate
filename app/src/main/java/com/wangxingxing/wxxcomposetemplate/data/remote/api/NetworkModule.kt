@@ -13,6 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -28,6 +29,7 @@ object NetworkModule {
     private const val BASE_URL = "https://api.example.com/"
     private const val WAN_ANDROID_BASE_URL = "https://www.wanandroid.com/"
     private const val BING_WALLPAPER_BASE_URL = "https://cn.bing.com/"
+    private const val LOCAL_BASE_URL = "http://192.168.10.254:8080/api/"
 
     @Provides
     @Singleton
@@ -105,5 +107,28 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
         return retrofit.create(BingWallpaperService::class.java)
+    }
+
+    /**
+     * 提供本地局域网 API 服务
+     */
+    @Provides
+    @Singleton
+    @Named("local")
+    fun provideLocalRetrofit(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(LOCAL_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocalApiService(@Named("local") retrofit: Retrofit): LocalApiService {
+        return retrofit.create(LocalApiService::class.java)
     }
 }

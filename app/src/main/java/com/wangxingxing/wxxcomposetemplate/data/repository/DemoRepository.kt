@@ -118,11 +118,20 @@ class DemoRepository @Inject constructor(
                 imageUrl = getImageUrl(3)
             )
         )
+        // 第四个 item 是本地网络请求示例
+        list.add(
+            DemoItem(
+                id = 4,
+                title = context.getString(R.string.local_user_demo_title),
+                content = context.getString(R.string.local_user_demo_content),
+                imageUrl = getImageUrl(4)
+            )
+        )
         // 其他示例数据
         // 确保每个 item 显示不同的图片
         // 对于前 8 个 item，使用必应壁纸 API 获取真实壁纸
         // 对于超过 8 个的 item，使用随机图片服务
-        (4..20).forEach { index ->
+        (5..20).forEach { index ->
             list.add(
                 DemoItem(
                     id = index,

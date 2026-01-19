@@ -86,4 +86,18 @@
     <string name="settings_title">设置</string>
     <string name="settings_back">返回</string>
     <string name="settings_theme_color">主题色</string>
+
+    <!-- 本地网络请求示例 -->
+    <string name="local_user_demo_title">本地网络请求示例</string>
+    <string name="local_user_demo_content">演示通过局域网 API 获取用户列表、查看详情、创建用户</string>
+    <string name="local_user_empty">暂无用户数据</string>
+    <string name="local_user_create">创建新用户</string>
+    <string name="local_user_retry">重试</string>
+    <string name="local_user_dialog_title">用户详情</string>
+    <string name="local_user_dialog_close">关闭</string>
+    <string name="local_user_create_title">创建用户</string>
+    <string name="local_user_username">用户名</string>
+    <string name="local_user_email">邮箱</string>
+    <string name="local_user_confirm">确定</string>
+    <string name="local_user_cancel">取消</string>
 </resources>

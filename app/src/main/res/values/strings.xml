@@ -86,4 +86,18 @@
     <string name="settings_title">Settings</string>
     <string name="settings_back">Back</string>
     <string name="settings_theme_color">Theme Color</string>
+
+    <!-- Local User Demo -->
+    <string name="local_user_demo_title">Local Network Request Example</string>
+    <string name="local_user_demo_content">Fetch user list, view detail, create user via LAN API</string>
+    <string name="local_user_empty">No user data</string>
+    <string name="local_user_create">Create New User</string>
+    <string name="local_user_retry">Retry</string>
+    <string name="local_user_dialog_title">User Detail</string>
+    <string name="local_user_dialog_close">Close</string>
+    <string name="local_user_create_title">Create User</string>
+    <string name="local_user_username">Username</string>
+    <string name="local_user_email">Email</string>
+    <string name="local_user_confirm">Confirm</string>
+    <string name="local_user_cancel">Cancel</string>
 </resources>

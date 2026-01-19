@@ -39,6 +39,7 @@ import ui.permission.PermissionScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.wangxingxing.wxxcomposetemplate.ui.local.LocalUserScreen
 
 /**
  * author : 王星星
@@ -101,6 +102,9 @@ fun MainScreen() {
             }
             composable("project_category") {
                 ProjectCategoryScreen()
+            }
+            composable("local_user") {
+                LocalUserScreen()
             }
             composable("article_detail/{articleJson}") { backStackEntry ->
                 val articleJson = backStackEntry.arguments?.getString("articleJson") ?: ""
