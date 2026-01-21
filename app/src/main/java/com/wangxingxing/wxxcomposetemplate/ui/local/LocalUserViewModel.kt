@@ -32,23 +32,71 @@ class LocalUserViewModel @Inject constructor(
     val selectedUser = MutableStateFlow<User?>(null)
     val dialogState = MutableStateFlow(false)
 
+    // 分页元数据
+    private var currentPage = 1
+    private val pageSize = 10
+    private var totalPages = 0
+    private var totalItems = 0
+
+    private val _canLoadMore = MutableStateFlow(false)
+    val canLoadMore: StateFlow<Boolean> = _canLoadMore.asStateFlow()
+
+    private val _isLoadingMore = MutableStateFlow(false)
+    val isLoadingMore: StateFlow<Boolean> = _isLoadingMore.asStateFlow()
+
+    private val _totalCount = MutableStateFlow(0)
+    val totalCount: StateFlow<Int> = _totalCount.asStateFlow()
+
     init {
-        loadUsers()
+        refresh()
     }
 
-    fun loadUsers() {
+    fun refresh() {
         _state.value = UiState.Loading
+        currentPage = 1
+        totalPages = 0
+        totalItems = 0
+        _canLoadMore.value = false
+        _users.value = emptyList()
+        loadUsers(page = 1, append = false)
+    }
+
+    private fun loadUsers(page: Int, append: Boolean) {
         viewModelScope.launch {
-            when (val result = repository.getUsers()) {
+            if (append) _isLoadingMore.value = true
+            when (val result = repository.getUsers(page, pageSize)) {
                 is ApiResult.Success -> {
-                    _users.value = result.data
-                    _state.value = UiState.Idle
+                    val pageData = result.data
+                    totalItems = pageData.total
+                    totalPages = pageData.pages
+                    currentPage = pageData.current
+                    _totalCount.value = totalItems
+
+                    val newList = if (append) _users.value + pageData.records else pageData.records
+                    _users.value = newList
+
+                    _canLoadMore.value = currentPage < totalPages
+
+                    if (!append) _state.value = UiState.Idle
                 }
                 is ApiResult.Error -> {
+                    if (append) {
+                        // 追加失败也维持已有数据，仅提示错误状态
+                        _isLoadingMore.value = false
+                    }
                     _state.value = UiState.Error(result.message)
                 }
                 else -> {}
             }
+            if (append) _isLoadingMore.value = false
+        }
+    }
+
+    fun loadMore() {
+        if (_isLoadingMore.value || !_canLoadMore.value) return
+        val next = currentPage + 1
+        if (next <= totalPages || totalPages == 0) {
+            loadUsers(page = next, append = true)
         }
     }
 
@@ -83,7 +131,8 @@ class LocalUserViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = repository.createUser(username, email)) {
                 is ApiResult.Success -> {
-                    loadUsers()
+                    // 创建成功后刷新第一页
+                    refresh()
                 }
                 is ApiResult.Error -> {
                     _state.value = UiState.Error(result.message)
@@ -94,6 +143,6 @@ class LocalUserViewModel @Inject constructor(
     }
 
     fun retry() {
-        loadUsers()
+        refresh()
     }
 }

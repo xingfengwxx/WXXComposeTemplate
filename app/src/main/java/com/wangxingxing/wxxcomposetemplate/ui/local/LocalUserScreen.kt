@@ -7,10 +7,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.User
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @Composable
 fun LocalUserScreen(
@@ -20,16 +18,23 @@ fun LocalUserScreen(
     val users by viewModel.users.collectAsState()
     val dialogState by viewModel.dialogState.collectAsState()
     val selectedUser by viewModel.selectedUser.collectAsState()
+    val canLoadMore by viewModel.canLoadMore.collectAsState()
+    val isLoadingMore by viewModel.isLoadingMore.collectAsState()
+    val totalCount by viewModel.totalCount.collectAsState()
 
     var showCreateDialog by remember { mutableStateOf(false) }
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "本地网络请求示例", style = MaterialTheme.typography.headlineMedium)
-            Button(onClick = { viewModel.retry() }, enabled = state !is UiState.Loading) {
-                Text("重试")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "本地网络请求示例（共 $totalCount 条）", style = MaterialTheme.typography.headlineMedium)
+            Button(onClick = { viewModel.refresh() }, enabled = state !is UiState.Loading) {
+                Text("刷新")
             }
         }
         Spacer(modifier = Modifier.height(12.dp))
@@ -45,19 +50,44 @@ fun LocalUserScreen(
                 Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(text = "错误: $msg", color = MaterialTheme.colorScheme.error)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { viewModel.retry() }) { Text("重试") }
+                    Button(onClick = { viewModel.refresh() }) { Text("重试") }
                 }
             }
             else -> {
                 if (users.isEmpty()) {
-                    Text(text = "暂无用户数据", style = MaterialTheme.typography.bodyMedium)
+                    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "暂无用户数据", style = MaterialTheme.typography.bodyMedium)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(onClick = { viewModel.refresh() }) { Text("刷新") }
+                    }
                 } else {
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
                         items(users) { user ->
                             ElevatedCard(onClick = { viewModel.onUserClick(user) }) {
                                 Column(modifier = Modifier.padding(16.dp)) {
-                                    Text(text = "${user.username}", style = MaterialTheme.typography.titleMedium)
+                                    Text(text = user.username, style = MaterialTheme.typography.titleMedium)
                                     Text(text = user.email, style = MaterialTheme.typography.bodyMedium)
+                                }
+                            }
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            when {
+                                isLoadingMore -> {
+                                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
+                                canLoadMore -> {
+                                    Button(
+                                        onClick = { viewModel.loadMore() },
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) { Text("加载更多") }
+                                }
+                                else -> {
+                                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                                        Text("没有更多了")
+                                    }
                                 }
                             }
                         }

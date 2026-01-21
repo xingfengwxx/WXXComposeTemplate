@@ -5,6 +5,7 @@ import com.wangxingxing.wxxcomposetemplate.data.remote.api.LocalApiService
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.User
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.CreateUserRequest
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.PageResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,8 +13,8 @@ import javax.inject.Singleton
 class LocalUserRepository @Inject constructor(
     private val localApiService: LocalApiService
 ) {
-    suspend fun getUsers(): ApiResult<List<User>> = safeCall {
-        localApiService.getUsers().toApiResult()
+    suspend fun getUsers(current: Int, size: Int): ApiResult<PageResponse<User>> = safeCall {
+        localApiService.getUsers(current, size).toApiResult()
     }
 
     suspend fun getUser(id: Int): ApiResult<User> = safeCall {
