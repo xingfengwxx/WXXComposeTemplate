@@ -73,21 +73,27 @@ fun LocalUserScreen(
                             Button(onClick = { pagingItems.refresh() }) { Text("刷新") }
                         }
                     } else {
-                        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.weight(1f).fillMaxWidth()
+                        ) {
                             items(
                                 count = pagingItems.itemCount,
                                 key = pagingItems.itemKey { it.id }
                             ) { index ->
                                 val user = pagingItems[index]
                                 if (user != null) {
-                                    ElevatedCard(onClick = { viewModel.onUserClick(user) }) {
+                                    ElevatedCard(
+                                        onClick = { viewModel.onUserClick(user) },
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
                                         Column(modifier = Modifier.padding(16.dp)) {
                                             Text(text = user.username, style = MaterialTheme.typography.titleMedium)
                                             Text(text = user.email, style = MaterialTheme.typography.bodyMedium)
                                         }
                                     }
                                 } else {
-                                    ElevatedCard {
+                                    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                                         Box(Modifier.fillMaxWidth().height(64.dp)) {}
                                     }
                                 }
