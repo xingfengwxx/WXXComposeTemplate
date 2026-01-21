@@ -2,13 +2,20 @@ package com.wangxingxing.wxxcomposetemplate.ui.local
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.User
 import com.wangxingxing.wxxcomposetemplate.data.repository.LocalUserRepository
+import com.wangxingxing.wxxcomposetemplate.data.repository.LocalUsersPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,81 +30,46 @@ class LocalUserViewModel @Inject constructor(
     private val repository: LocalUserRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<UiState>(UiState.Loading)
+    private val _state = MutableStateFlow<UiState>(UiState.Idle)
     val state: StateFlow<UiState> = _state.asStateFlow()
 
-    private val _users = MutableStateFlow<List<User>>(emptyList())
-    val users: StateFlow<List<User>> = _users.asStateFlow()
-
+    // 详情弹窗
     val selectedUser = MutableStateFlow<User?>(null)
     val dialogState = MutableStateFlow(false)
 
-    // 分页元数据
-    private var currentPage = 1
     private val pageSize = 10
-    private var totalPages = 0
-    private var totalItems = 0
 
-    private val _canLoadMore = MutableStateFlow(false)
-    val canLoadMore: StateFlow<Boolean> = _canLoadMore.asStateFlow()
-
-    private val _isLoadingMore = MutableStateFlow(false)
-    val isLoadingMore: StateFlow<Boolean> = _isLoadingMore.asStateFlow()
-
+    // 总数展示
     private val _totalCount = MutableStateFlow(0)
     val totalCount: StateFlow<Int> = _totalCount.asStateFlow()
 
-    init {
-        refresh()
-    }
+    // 列表刷新触发器（递增即可触发 flatMapLatest 重建 Pager）
+    private val refreshCounter = MutableStateFlow(0)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val pagingDataFlow = refreshCounter.flatMapLatest {
+        Pager(
+            config = PagingConfig(
+                pageSize = pageSize,
+                initialLoadSize = pageSize,
+                prefetchDistance = maxOf(1, pageSize / 2),
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                LocalUsersPagingSource(
+                    repository = repository,
+                    pageSize = pageSize,
+                    onPageMeta = { meta ->
+                        _totalCount.value = meta.total
+                    }
+                )
+            }
+        ).flow
+    }.cachedIn(viewModelScope)
 
     fun refresh() {
-        _state.value = UiState.Loading
-        currentPage = 1
-        totalPages = 0
-        totalItems = 0
-        _canLoadMore.value = false
-        _users.value = emptyList()
-        loadUsers(page = 1, append = false)
-    }
-
-    private fun loadUsers(page: Int, append: Boolean) {
-        viewModelScope.launch {
-            if (append) _isLoadingMore.value = true
-            when (val result = repository.getUsers(page, pageSize)) {
-                is ApiResult.Success -> {
-                    val pageData = result.data
-                    totalItems = pageData.total
-                    totalPages = pageData.pages
-                    currentPage = pageData.current
-                    _totalCount.value = totalItems
-
-                    val newList = if (append) _users.value + pageData.records else pageData.records
-                    _users.value = newList
-
-                    _canLoadMore.value = currentPage < totalPages
-
-                    if (!append) _state.value = UiState.Idle
-                }
-                is ApiResult.Error -> {
-                    if (append) {
-                        // 追加失败也维持已有数据，仅提示错误状态
-                        _isLoadingMore.value = false
-                    }
-                    _state.value = UiState.Error(result.message)
-                }
-                else -> {}
-            }
-            if (append) _isLoadingMore.value = false
-        }
-    }
-
-    fun loadMore() {
-        if (_isLoadingMore.value || !_canLoadMore.value) return
-        val next = currentPage + 1
-        if (next <= totalPages || totalPages == 0) {
-            loadUsers(page = next, append = true)
-        }
+        // 触发重建 Pager，驱动整表刷新
+        refreshCounter.value = refreshCounter.value + 1
     }
 
     fun onUserClick(user: User) {
@@ -131,7 +103,8 @@ class LocalUserViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = repository.createUser(username, email)) {
                 is ApiResult.Success -> {
-                    // 创建成功后刷新第一页
+                    // 创建成功后刷新分页
+                    _state.value = UiState.Idle
                     refresh()
                 }
                 is ApiResult.Error -> {
