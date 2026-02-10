@@ -26,6 +26,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.wangxingxing.wxxcomposetemplate.ui.local.LocalUserViewModel
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.User
 
@@ -533,6 +534,181 @@ private fun UserDetailRow(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(
+    name = "LocalUserScreen Preview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun LocalUserScreenPreview() {
+    MaterialTheme {
+        // 由于预览环境中 Hilt 无法正常工作，这里创建一个简单的预览版本
+        // 实际项目中可以使用 mock ViewModel 或预览参数
+        Column(modifier = Modifier.fillMaxSize()) {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "本地网络请求示例",
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                },
+                actions = {
+                    Text(
+                        text = "共 0 条",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(end = 16.dp)
+                    )
+                }
+            )
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.PersonOff,
+                        contentDescription = "暂无数据",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(48.dp)
+                    )
+                    Text(
+                        text = "暂无用户数据",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    FilledTonalButton(onClick = {}) {
+                        Text("刷新")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview(
+    name = "UserCard Preview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun UserCardPreview() {
+    MaterialTheme {
+        val mockUser = User(
+            id = 1,
+            username = "测试用户",
+            email = "test@example.com",
+            createdAt = "2024-01-01 00:00:00"
+        )
+        UserCard(user = mockUser) {
+            // 预览点击事件
+        }
+    }
+}
+
+@Preview(
+    name = "UserCardSkeleton Preview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun UserCardSkeletonPreview() {
+    MaterialTheme {
+        UserCardSkeleton()
+    }
+}
+
+@Preview(
+    name = "LoadingState Preview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun LoadingStatePreview() {
+    MaterialTheme {
+        LoadingState()
+    }
+}
+
+@Preview(
+    name = "ErrorState Preview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun ErrorStatePreview() {
+    MaterialTheme {
+        ErrorState(
+            message = "网络连接失败，请检查网络设置后重试",
+            onRetry = {}
+        )
+    }
+}
+
+@Preview(
+    name = "EmptyState Preview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun EmptyStatePreview() {
+    MaterialTheme {
+        EmptyState(onRefresh = {})
+    }
+}
+
+@Preview(
+    name = "LoadingMoreState Preview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun LoadingMoreStatePreview() {
+    MaterialTheme {
+        LoadingMoreState()
+    }
+}
+
+@Preview(
+    name = "LoadMoreErrorState Preview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun LoadMoreErrorStatePreview() {
+    MaterialTheme {
+        LoadMoreErrorState(onRetry = {})
+    }
+}
+
+@Preview(
+    name = "EndOfListState Preview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun EndOfListStatePreview() {
+    MaterialTheme {
+        EndOfListState()
+    }
+}
+
+@Preview(
+    name = "UserDetailRow Preview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun UserDetailRowPreview() {
+    MaterialTheme {
+        UserDetailRow(
+            label = "用户名",
+            value = "测试用户"
         )
     }
 }
