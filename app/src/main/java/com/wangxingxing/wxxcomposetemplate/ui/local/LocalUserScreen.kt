@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.wangxingxing.wxxcomposetemplate.ui.local.LocalUserViewModel
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.User
+import com.wangxingxing.wxxcomposetemplate.base.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,56 +86,68 @@ fun LocalUserScreen(
             .fillMaxSize()
             .padding(it)
         ) {
-            PullToRefreshBox(
-                isRefreshing = isRefreshing,
-                onRefresh = { pagingItems.refresh() }
-            ) {
-                when (val refreshState = pagingItems.loadState.refresh) {
-                    is LoadState.Loading -> {
-                        LoadingState()
-                    }
-                    is LoadState.Error -> {
-                        ErrorState(
-                            message = refreshState.error.message ?: "加载失败",
-                            onRetry = { pagingItems.retry() }
-                        )
-                    }
-                    is LoadState.NotLoading -> {
-                        if (pagingItems.itemCount == 0) {
-                            EmptyState(onRefresh = { pagingItems.refresh() })
-                        } else {
-                            LazyColumn(
-                                contentPadding = PaddingValues(
-                                    horizontal = 16.dp,
-                                    vertical = 12.dp
-                                ),
-                                verticalArrangement = Arrangement.spacedBy(12.dp),
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                items(
-                                    count = pagingItems.itemCount,
-                                    key = pagingItems.itemKey { it.id }
-                                ) { index ->
-                                    val user = pagingItems[index]
-                                    if (user != null) {
-                                        UserCard(user = user) {
-                                            viewModel.onUserClick(user)
+            // 处理 viewModel.state 的错误状态
+            when (state) {
+                is UiState.Error -> {
+                    val errorMessage = (state as UiState.Error).message
+                    ErrorState(
+                        message = errorMessage,
+                        onRetry = { pagingItems.refresh() }
+                    )
+                }
+                else -> {
+                    PullToRefreshBox(
+                        isRefreshing = isRefreshing,
+                        onRefresh = { pagingItems.refresh() }
+                    ) {
+                        when (val refreshState = pagingItems.loadState.refresh) {
+                            is LoadState.Loading -> {
+                                LoadingState()
+                            }
+                            is LoadState.Error -> {
+                                ErrorState(
+                                    message = refreshState.error.message ?: "加载失败",
+                                    onRetry = { pagingItems.retry() }
+                                )
+                            }
+                            is LoadState.NotLoading -> {
+                                if (pagingItems.itemCount == 0) {
+                                    EmptyState(onRefresh = { pagingItems.refresh() })
+                                } else {
+                                    LazyColumn(
+                                        contentPadding = PaddingValues(
+                                            horizontal = 16.dp,
+                                            vertical = 12.dp
+                                        ),
+                                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                                        modifier = Modifier.fillMaxSize()
+                                    ) {
+                                        items(
+                                            count = pagingItems.itemCount,
+                                            key = pagingItems.itemKey { it.id }
+                                        ) { index ->
+                                            val user = pagingItems[index]
+                                            if (user != null) {
+                                                UserCard(user = user) {
+                                                    viewModel.onUserClick(user)
+                                                }
+                                            } else {
+                                                UserCardSkeleton()
+                                            }
                                         }
-                                    } else {
-                                        UserCardSkeleton()
-                                    }
-                                }
-                                item {
-                                    when (val appendState = pagingItems.loadState.append) {
-                                        is LoadState.Loading -> {
-                                            LoadingMoreState()
-                                        }
-                                        is LoadState.Error -> {
-                                            LoadMoreErrorState(onRetry = { pagingItems.retry() })
-                                        }
-                                        is LoadState.NotLoading -> {
-                                            if (pagingItems.itemCount > 0 && appendState.endOfPaginationReached) {
-                                                EndOfListState()
+                                        item {
+                                            when (val appendState = pagingItems.loadState.append) {
+                                                is LoadState.Loading -> {
+                                                    LoadingMoreState()
+                                                }
+                                                is LoadState.Error -> {
+                                                    LoadMoreErrorState(onRetry = { pagingItems.retry() })
+                                                }
+                                                is LoadState.NotLoading -> {
+                                                    if (pagingItems.itemCount > 0 && appendState.endOfPaginationReached) {
+                                                        EndOfListState()
+                                                    }
+                                                }
                                             }
                                         }
                                     }
