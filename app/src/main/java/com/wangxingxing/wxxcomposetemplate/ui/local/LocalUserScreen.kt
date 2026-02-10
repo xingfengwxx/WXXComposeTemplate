@@ -1,18 +1,33 @@
 package com.wangxingxing.wxxcomposetemplate.ui.local
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.outlined.PersonOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.ui.text.style.TextAlign
+import com.wangxingxing.wxxcomposetemplate.ui.local.LocalUserViewModel
+import com.wangxingxing.wxxcomposetemplate.data.remote.api.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,94 +48,92 @@ fun LocalUserScreen(
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
-    PullToRefreshBox(
-        isRefreshing = isRefreshing,
-        onRefresh = { pagingItems.refresh() }
-    ) {
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "本地网络请求示例",
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                },
+                actions = {
+                    Text(
+                        text = "共 $totalCount 条",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(end = 16.dp)
+                    )
+                }
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { showCreateDialog = true },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
-                Text(text = "本地网络请求示例（共 $totalCount 条）", style = MaterialTheme.typography.headlineMedium)
-                Button(onClick = { pagingItems.refresh() }, enabled = !isRefreshing) {
-                    Text("刷新")
-                }
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "创建新用户"
+                )
             }
-            Spacer(modifier = Modifier.height(12.dp))
-
-            when (val refreshState = pagingItems.loadState.refresh) {
-                is LoadState.Loading -> {
-                    // 下拉刷新或首次加载时，展示占位
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
+        }
+    ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(it)
+        ) {
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = { pagingItems.refresh() }
+            ) {
+                when (val refreshState = pagingItems.loadState.refresh) {
+                    is LoadState.Loading -> {
+                        LoadingState()
                     }
-                }
-                is LoadState.Error -> {
-                    val msg = refreshState.error.message ?: "加载失败"
-                    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = "错误: $msg", color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = { pagingItems.retry() }) { Text("重试") }
+                    is LoadState.Error -> {
+                        ErrorState(
+                            message = refreshState.error.message ?: "加载失败",
+                            onRetry = { pagingItems.retry() }
+                        )
                     }
-                }
-                is LoadState.NotLoading -> {
-                    if (pagingItems.itemCount == 0) {
-                        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "暂无用户数据", style = MaterialTheme.typography.bodyMedium)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Button(onClick = { pagingItems.refresh() }) { Text("刷新") }
-                        }
-                    } else {
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.weight(1f).fillMaxWidth()
-                        ) {
-                            items(
-                                count = pagingItems.itemCount,
-                                key = pagingItems.itemKey { it.id }
-                            ) { index ->
-                                val user = pagingItems[index]
-                                if (user != null) {
-                                    ElevatedCard(
-                                        onClick = { viewModel.onUserClick(user) },
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Column(modifier = Modifier.padding(16.dp)) {
-                                            Text(text = user.username, style = MaterialTheme.typography.titleMedium)
-                                            Text(text = user.email, style = MaterialTheme.typography.bodyMedium)
+                    is LoadState.NotLoading -> {
+                        if (pagingItems.itemCount == 0) {
+                            EmptyState(onRefresh = { pagingItems.refresh() })
+                        } else {
+                            LazyColumn(
+                                contentPadding = PaddingValues(
+                                    horizontal = 16.dp,
+                                    vertical = 12.dp
+                                ),
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                items(
+                                    count = pagingItems.itemCount,
+                                    key = pagingItems.itemKey { it.id }
+                                ) { index ->
+                                    val user = pagingItems[index]
+                                    if (user != null) {
+                                        UserCard(user = user) {
+                                            viewModel.onUserClick(user)
                                         }
-                                    }
-                                } else {
-                                    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
-                                        Box(Modifier.fillMaxWidth().height(64.dp)) {}
+                                    } else {
+                                        UserCardSkeleton()
                                     }
                                 }
-                            }
-                            // 底部加载更多 / 错误 / 结束提示
-                            item {
-                                Spacer(modifier = Modifier.height(8.dp))
-                                when (val appendState = pagingItems.loadState.append) {
-                                    is LoadState.Loading -> {
-                                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                                            CircularProgressIndicator()
+                                item {
+                                    when (val appendState = pagingItems.loadState.append) {
+                                        is LoadState.Loading -> {
+                                            LoadingMoreState()
                                         }
-                                    }
-                                    is LoadState.Error -> {
-                                        Column(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalAlignment = Alignment.CenterHorizontally
-                                        ) {
-                                            Text("加载更多失败")
-                                            Spacer(Modifier.height(4.dp))
-                                            Button(onClick = { pagingItems.retry() }) { Text("重试") }
+                                        is LoadState.Error -> {
+                                            LoadMoreErrorState(onRetry = { pagingItems.retry() })
                                         }
-                                    }
-                                    is LoadState.NotLoading -> {
-                                        if (pagingItems.itemCount > 0 && appendState.endOfPaginationReached) {
-                                            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                                                Text("没有更多了")
+                                        is LoadState.NotLoading -> {
+                                            if (pagingItems.itemCount > 0 && appendState.endOfPaginationReached) {
+                                                EndOfListState()
                                             }
                                         }
                                     }
@@ -130,51 +143,396 @@ fun LocalUserScreen(
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = { showCreateDialog = true },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = state !is UiState.Loading
-            ) { Text("创建新用户") }
         }
     }
 
     if (showCreateDialog) {
-        AlertDialog(
-            onDismissRequest = { showCreateDialog = false },
-            title = { Text("创建用户") },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedTextField(value = username, onValueChange = { username = it }, label = { Text("用户名") })
-                    OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("邮箱") })
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.createNewUser(username.trim(), email.trim())
-                    showCreateDialog = false
-                }, enabled = username.isNotBlank() && email.isNotBlank()) { Text("确定") }
-            },
-            dismissButton = { TextButton(onClick = { showCreateDialog = false }) { Text("取消") } }
+        CreateUserDialog(
+            username = username,
+            email = email,
+            onUsernameChange = { username = it },
+            onEmailChange = { email = it },
+            onDismiss = { showCreateDialog = false },
+            onConfirm = {
+                viewModel.createNewUser(username.trim(), email.trim())
+                showCreateDialog = false
+            }
         )
     }
 
     if (dialogState && selectedUser != null) {
-        AlertDialog(
-            onDismissRequest = { viewModel.dismissDialog() },
-            title = { Text("用户详情") },
-            text = {
-                val u = selectedUser!!
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("ID: ${u.id}")
-                    Text("用户名: ${u.username}")
-                    Text("邮箱: ${u.email}")
-                    Text("创建时间: ${u.createdAt ?: "未知"}")
-                }
-            },
-            confirmButton = { TextButton(onClick = { viewModel.dismissDialog() }) { Text("关闭") } },
-            dismissButton = {}
+        UserDetailDialog(
+            user = selectedUser!!,
+            onDismiss = { viewModel.dismissDialog() }
+        )
+    }
+}
+
+@Composable
+private fun UserCard(
+    user: User,
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = user.username.firstOrNull()?.toString() ?: "U",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = user.username,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = user.email,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = "查看详情",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun UserCardSkeleton() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.1f))
+            )
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Box(
+                    modifier = Modifier
+                        .height(20.dp)
+                        .width(120.dp)
+                        .background(MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.1f))
+                        .clip(RoundedCornerShape(4.dp))
+                )
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Box(
+                    modifier = Modifier
+                        .height(16.dp)
+                        .width(160.dp)
+                        .background(MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.1f))
+                        .clip(RoundedCornerShape(4.dp))
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoadingState() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = "加载中...",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun ErrorState(
+    message: String,
+    onRetry: () -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ErrorOutline,
+                contentDescription = "错误",
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(48.dp)
+            )
+            Text(
+                text = "错误: $message",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
+            )
+            FilledTonalButton(
+                onClick = onRetry,
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                )
+            ) {
+                Text("重试")
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyState(
+    onRefresh: () -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.PersonOff,
+                contentDescription = "暂无数据",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(48.dp)
+            )
+            Text(
+                text = "暂无用户数据",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            FilledTonalButton(onClick = onRefresh) {
+                Text("刷新")
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoadingMoreState() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
+
+@Composable
+private fun LoadMoreErrorState(
+    onRetry: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "加载更多失败",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error
+            )
+            TextButton(onClick = onRetry) {
+                Text("重试")
+            }
+        }
+    }
+}
+
+@Composable
+private fun EndOfListState() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "没有更多了",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun CreateUserDialog(
+    username: String,
+    email: String,
+    onUsernameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "创建用户",
+                style = MaterialTheme.typography.headlineSmall
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = onUsernameChange,
+                    label = {
+                        Text("用户名")
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = onEmailChange,
+                    label = {
+                        Text("邮箱")
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onConfirm,
+                enabled = username.isNotBlank() && email.isNotBlank()
+            ) {
+                Text("确定")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("取消")
+            }
+        }
+    )
+}
+
+@Composable
+private fun UserDetailDialog(
+    user: User,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "用户详情",
+                style = MaterialTheme.typography.headlineSmall
+            )
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
+                UserDetailRow(label = "ID", value = user.id.toString())
+                UserDetailRow(label = "用户名", value = user.username)
+                UserDetailRow(label = "邮箱", value = user.email)
+                UserDetailRow(label = "创建时间", value = user.createdAt ?: "未知")
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("关闭")
+            }
+        }
+    )
+}
+
+@Composable
+private fun UserDetailRow(
+    label: String,
+    value: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.width(80.dp)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f)
         )
     }
 }
