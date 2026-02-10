@@ -16,8 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.wangxingxing.wxxcomposetemplate.ui.theme.WXXComposeTemplateTheme
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wangxingxing.wxxcomposetemplate.R
-import com.wangxingxing.wxxcomposetemplate.base.UiState
-import com.wangxingxing.wxxcomposetemplate.data.remote.api.ApiResult
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wangxingxing.wxxcomposetemplate.data.remote.api.model.UserInfo
 
 /**
@@ -31,14 +30,20 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     onLoginSuccess: () -> Unit = {}
 ) {
-    val uiState by viewModel.getUiState().collectAsState()
-    val loginResult by viewModel.loginResult.collectAsState()
-    val localUserInfo by viewModel.localUserInfo.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf(state.username) }
+    var password by remember { mutableStateOf(state.password) }
 
-    // 预先获取字符串资源
+    // 收集一次性副作用（导航）
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                LoginEffect.NavigateAfterLogin -> onLoginSuccess()
+            }
+        }
+    }
+
     val loginTitle = stringResource(R.string.login_title)
     val usernameHint = stringResource(R.string.login_username_hint)
     val passwordHint = stringResource(R.string.login_password_hint)
@@ -46,11 +51,7 @@ fun LoginScreen(
     val loggingIn = stringResource(R.string.login_logging_in)
     val logoutButton = stringResource(R.string.login_logout)
 
-    // 获取用户信息（优先使用本地，其次使用登录结果）
-    val userInfo = localUserInfo ?: (when (val result = loginResult) {
-        is ApiResult.Success -> result.data
-        else -> null
-    })
+    val userInfo = state.userInfo
 
     Column(
         modifier = Modifier
@@ -72,7 +73,7 @@ fun LoginScreen(
             // 退出按钮
             Button(
                 onClick = {
-                    viewModel.logout()
+                    viewModel.dispatch(LoginEvent.Logout)
                     // 清空输入框
                     username = ""
                     password = ""
@@ -104,7 +105,7 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 singleLine = true,
-                enabled = uiState !is UiState.Loading
+                enabled = !state.isLoading
             )
 
             // 密码输入框
@@ -117,22 +118,22 @@ fun LoginScreen(
                     .padding(bottom = 24.dp),
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
-                enabled = uiState !is UiState.Loading
+                enabled = !state.isLoading
             )
 
             // 登录按钮
             Button(
                 onClick = {
                     if (username.isNotBlank() && password.isNotBlank()) {
-                        viewModel.login(username, password)
+                        viewModel.dispatch(LoginEvent.Submit(username, password))
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                enabled = username.isNotBlank() && password.isNotBlank() && uiState !is UiState.Loading
+                enabled = username.isNotBlank() && password.isNotBlank() && !state.isLoading
             ) {
-                if (uiState is UiState.Loading) {
+                if (state.isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = MaterialTheme.colorScheme.onPrimary
@@ -145,9 +146,9 @@ fun LoginScreen(
             }
 
             // 错误提示
-            if (uiState is UiState.Error) {
+            state.error?.let { error ->
                 Text(
-                    text = (uiState as UiState.Error).message,
+                    text = error,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(top = 16.dp)
                 )
@@ -319,4 +320,3 @@ fun UserInfoRowPreview() {
         }
     }
 }
-
