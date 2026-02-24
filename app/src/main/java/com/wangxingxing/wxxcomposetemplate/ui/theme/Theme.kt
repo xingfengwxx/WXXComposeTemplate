@@ -1,6 +1,5 @@
 package com.wangxingxing.wxxcomposetemplate.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -156,22 +155,54 @@ fun getColorScheme(themeColor: Color, darkTheme: Boolean): androidx.compose.mate
     }
 }
 
+enum class ThemeMode { SYSTEM, LIGHT, DARK }
+
+fun resolveIsDark(mode: ThemeMode): Boolean {
+    return when (mode) {
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+    }
+}
+
+@Composable
+fun AppTheme(
+    mode: ThemeMode = ThemeMode.SYSTEM,
+    dynamicColor: Boolean = true,
+    themeColorIndex: Int = 0,
+    content: @Composable () -> Unit
+) {
+    val isDarkTheme = resolveIsDark(mode)
+    val themeColor = getThemeColor(themeColorIndex)
+
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (isDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+        else -> getColorScheme(themeColor, isDarkTheme)
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}
+
 @Composable
 fun WXXComposeTemplateTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false, // 禁用动态颜色，使用自定义主题色
-    themeColorIndex: Int = 0, // 主题色索引，从外部传入
+    dynamicColor: Boolean = true,
+    themeColorIndex: Int = 0,
     content: @Composable () -> Unit
 ) {
-    val themeColor = getThemeColor(themeColorIndex)
-    
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        else -> getColorScheme(themeColor, darkTheme)
+        else -> getColorScheme(getThemeColor(themeColorIndex), darkTheme)
     }
 
     MaterialTheme(
