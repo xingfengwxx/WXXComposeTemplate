@@ -157,12 +157,25 @@ fun getColorScheme(themeColor: Color, darkTheme: Boolean): androidx.compose.mate
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
-fun resolveIsDark(mode: ThemeMode): Boolean {
+/**
+ * 非 Composable 版本 - 用于 ViewModel 等非 UI 层
+ * @param mode 主题模式
+ * @param isSystemDark 系统是否为深色模式(需要调用者提供)
+ */
+fun resolveIsDark(mode: ThemeMode, isSystemDark: Boolean): Boolean {
     return when (mode) {
-        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+        ThemeMode.SYSTEM -> isSystemDark
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
     }
+}
+
+/**
+ * Composable 版本 - 用于 UI 层,自动获取系统主题
+ */
+@Composable
+fun resolveIsDark(mode: ThemeMode): Boolean {
+    return resolveIsDark(mode, isSystemInDarkTheme())
 }
 
 @Composable

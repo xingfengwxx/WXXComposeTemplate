@@ -22,7 +22,6 @@ class ThemeViewModel @Inject constructor(
 
     data class UiState(
         val mode: ThemeMode = ThemeMode.SYSTEM,
-        val isDarkTheme: Boolean = false,
         val dynamicColor: Boolean = true,
         val themeColorIndex: Int = 0
     )
@@ -46,10 +45,8 @@ class ThemeViewModel @Inject constructor(
             2 -> ThemeMode.DARK
             else -> ThemeMode.SYSTEM
         }
-        val isDark = resolveIsDark(mode)
         UiState(
             mode = mode,
-            isDarkTheme = isDark,
             dynamicColor = dynamic,
             themeColorIndex = colorIndex
         )
@@ -71,7 +68,7 @@ class ThemeViewModel @Inject constructor(
                 ThemeMode.DARK -> 2
             }
             settingsRepository.saveThemeMode(modeInt)
-            _internalState.update { it.copy(mode = mode, isDarkTheme = resolveIsDark(mode)) }
+            _internalState.update { it.copy(mode = mode) }
         }
     }
 
