@@ -210,13 +210,8 @@ fun WXXComposeTemplateTheme(
     themeColorIndex: Int = 0,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        else -> getColorScheme(getThemeColor(themeColorIndex), darkTheme)
-    }
+    val themeColor = getThemeColor(themeColorIndex)
+    val colorScheme = getColorScheme(themeColor, darkTheme)
 
     MaterialTheme(
         colorScheme = colorScheme,
