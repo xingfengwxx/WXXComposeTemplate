@@ -109,6 +109,10 @@ fun DemoScreen(
                                 else if (item.title == localUserTitle) {
                                     navController.navigate("local_user")
                                 }
+                                // 点击标题5跳转到水果展示页面
+                                else if (item.title == "标题 5") {
+                                    navController.navigate("fruit")
+                                }
                             }
                         )
                     }
@@ -130,7 +134,7 @@ fun DemoItemCard(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (item.title == permissionTitle || item.title == loginTitle || item.title == projectCategoryTitle || item.title == stringResource(com.wangxingxing.wxxcomposetemplate.R.string.local_user_demo_title)) {
+                if (item.title == permissionTitle || item.title == loginTitle || item.title == projectCategoryTitle || item.title == stringResource(com.wangxingxing.wxxcomposetemplate.R.string.local_user_demo_title) || item.title == "标题 5") {
                     Modifier.clickable { onClick() }
                 } else {
                     Modifier

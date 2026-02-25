@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -175,17 +174,6 @@ fun BottomNavigationBar(navController: NavController) {
                 )
             },
             label = { Text(stringResource(com.wangxingxing.wxxcomposetemplate.R.string.nav_settings)) }
-        )
-        NavigationBarItem(
-            selected = currentRoute == "fruit",
-            onClick = { navController.navigate("fruit") },
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.ShoppingCart,
-                    contentDescription = "水果"
-                )
-            },
-            label = { Text("水果") }
         )
     }
 }
