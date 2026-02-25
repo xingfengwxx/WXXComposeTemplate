@@ -46,6 +46,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import com.wangxingxing.wxxcomposetemplate.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,8 +107,8 @@ fun FruitScreen() {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(40.dp)
-                    .clip(RoundedCornerShape(20.dp)),
+                    .height(48.dp)
+                    .clip(RoundedCornerShape(24.dp)),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color(0xFFF0F0F0),
                     unfocusedContainerColor = Color(0xFFF0F0F0),
@@ -185,7 +187,7 @@ fun FruitScreen() {
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
+                    .height(110.dp)
                     .background(Color.White)
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -195,7 +197,7 @@ fun FruitScreen() {
                     val category = categories[it]
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.width(60.dp)
+                        modifier = Modifier.width(70.dp)
                     ) {
                         Box(
                             modifier = Modifier
@@ -215,8 +217,12 @@ fun FruitScreen() {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = category.name,
-                            fontSize = 12.sp,
-                            color = Color.Black
+                            fontSize = 11.sp,
+                            color = Color.Black,
+                            maxLines = 1,
+                            softWrap = false,
+                            overflow = TextOverflow.Clip,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
@@ -288,15 +294,18 @@ fun FruitScreen() {
                                 ) {
                                     Text(
                                         text = product.price,
-                                        fontSize = 16.sp,
+                                        fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color(0xFFFF4444)
                                     )
                                     Spacer(modifier = Modifier.weight(1f))
                                     Text(
                                         text = product.sales,
-                                        fontSize = 11.sp,
-                                        color = Color(0xFF999999)
+                                        fontSize = 10.sp,
+                                        color = Color(0xFF999999),
+                                        maxLines = 1,
+                                        softWrap = false,
+                                        overflow = TextOverflow.Clip
                                     )
                                 }
                             }
